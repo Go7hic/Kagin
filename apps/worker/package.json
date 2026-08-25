@@ -1,0 +1,27 @@
+{
+  "name": "@kagin/worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --local --persist-to .wrangler/state",
+    "deploy": "wrangler d1 migrations apply kagin-db --remote && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "types": "wrangler types",
+    "verify": "bash scripts/verify.sh",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.7.0",
+    "hono": "^4.8.3",
+    "jose": "^6.0.11",
+    "stripe": "^22.5.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250617.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.24.0"
+  }
+}

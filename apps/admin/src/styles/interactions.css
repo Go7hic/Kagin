@@ -1,0 +1,352 @@
+/* Apple-design-inspired interaction layer — response, materials, motion */
+
+:root {
+  --kg-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --kg-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --kg-duration-instant: 100ms;
+  --kg-duration-fast: 140ms;
+  --kg-duration-normal: 280ms;
+  --kg-tap-min: 44px;
+  --kg-material-bg: color-mix(in srgb, var(--kg-bg) 72%, transparent);
+  --kg-material-bg-heavy: color-mix(in srgb, var(--kg-bg-subtle) 88%, transparent);
+  --kg-material-edge: color-mix(in srgb, var(--kg-fg) 8%, transparent);
+  --kg-shadow-sm: 0 1px 2px color-mix(in srgb, var(--kg-fg) 5%, transparent);
+  --kg-shadow-md: 0 12px 32px color-mix(in srgb, var(--kg-fg) 10%, transparent);
+  --kg-shadow-lg: 0 24px 48px color-mix(in srgb, var(--kg-fg) 12%, transparent);
+}
+
+html {
+  scroll-behavior: smooth;
+  font-optical-sizing: auto;
+}
+
+body {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .kg-nav-sticky,
+  .kg-sidebar,
+  .kg-admin-header,
+  .kg-login-brand {
+    backdrop-filter: none;
+    background: var(--kg-bg);
+  }
+}
+
+@media (prefers-contrast: more) {
+  .kg-nav-sticky,
+  .kg-sidebar,
+  .kg-admin-header {
+    background: var(--kg-bg);
+    border-color: var(--kg-border-strong);
+  }
+
+  .kg-btn-secondary {
+    border-color: var(--kg-border-strong);
+  }
+}
+
+/* —— Press feedback (respond on pointer-down) —— */
+
+.kg-btn {
+  min-height: var(--kg-tap-min);
+  transition:
+    transform var(--kg-duration-instant) var(--kg-ease-spring),
+    background-color var(--kg-duration-fast) ease,
+    border-color var(--kg-duration-fast) ease,
+    box-shadow var(--kg-duration-normal) var(--kg-ease-spring),
+    opacity var(--kg-duration-fast) ease;
+}
+
+.kg-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.kg-btn:focus-visible,
+.kg-nav-link:focus-visible,
+.kg-site-nav-link:focus-visible,
+.kg-logo-mark:focus-visible,
+.kg-input:focus-visible,
+.kg-select:focus-visible,
+.kg-textarea:focus-visible {
+  outline: 2px solid var(--kg-accent);
+  outline-offset: 2px;
+}
+
+.kg-btn-primary:hover:not(:disabled) {
+  box-shadow: var(--kg-shadow-sm);
+}
+
+.kg-btn-secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--kg-fg) 4%, transparent);
+}
+
+.kg-nav-link {
+  min-height: 36px;
+  transition:
+    transform var(--kg-duration-instant) var(--kg-ease-spring),
+    background-color var(--kg-duration-fast) ease,
+    color var(--kg-duration-fast) ease;
+}
+
+.kg-nav-link:active {
+  transform: scale(0.97);
+}
+
+.kg-logo-mark {
+  transition: transform var(--kg-duration-instant) var(--kg-ease-spring);
+  border-radius: var(--kg-radius);
+}
+
+.kg-logo-mark:active {
+  transform: scale(0.97);
+}
+
+/* —— Landing nav —— */
+
+.kg-site-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--kg-nav-height);
+  gap: var(--kg-space-4);
+}
+
+.kg-site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--kg-space-4);
+}
+
+.kg-site-nav-link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--kg-fg-muted);
+  letter-spacing: 0.01em;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--kg-radius);
+  min-height: var(--kg-tap-min);
+  display: inline-flex;
+  align-items: center;
+  transition:
+    transform var(--kg-duration-instant) var(--kg-ease-spring),
+    color var(--kg-duration-fast) ease,
+    background-color var(--kg-duration-fast) ease;
+}
+
+.kg-site-nav-link:hover {
+  color: var(--kg-fg);
+  background: color-mix(in srgb, var(--kg-fg) 4%, transparent);
+}
+
+.kg-site-nav-link:active {
+  transform: scale(0.97);
+}
+
+/* —— Translucent materials —— */
+
+.kg-nav-sticky {
+  backdrop-filter: blur(20px) saturate(180%);
+  background: var(--kg-material-bg);
+  border-bottom: none;
+  box-shadow:
+    inset 0 -1px 0 var(--kg-material-edge),
+    var(--kg-shadow-sm);
+}
+
+.kg-sidebar {
+  background: var(--kg-material-bg-heavy);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+.kg-admin-header {
+  backdrop-filter: blur(20px) saturate(180%);
+  background: var(--kg-material-bg);
+  border-bottom: none;
+  box-shadow: inset 0 -1px 0 var(--kg-material-edge);
+}
+
+/* —— Cards & surfaces —— */
+
+.kg-feature-item {
+  transition: background-color var(--kg-duration-fast) ease;
+}
+
+.kg-feature-item:hover {
+  background: color-mix(in srgb, var(--kg-fg) 2%, transparent);
+}
+
+.kg-stat-card,
+.kg-panel {
+  transition:
+    transform var(--kg-duration-normal) var(--kg-ease-spring),
+    box-shadow var(--kg-duration-normal) var(--kg-ease-spring);
+}
+
+.kg-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--kg-shadow-sm);
+}
+
+.kg-flow-step {
+  transition: border-color var(--kg-duration-fast) ease;
+}
+
+.kg-flow-step:hover {
+  border-top-color: color-mix(in srgb, var(--kg-fg) 35%, var(--kg-border));
+}
+
+.kg-cta-band {
+  transition:
+    transform var(--kg-duration-normal) var(--kg-ease-spring),
+    box-shadow var(--kg-duration-normal) var(--kg-ease-spring);
+}
+
+.kg-cta-band:hover {
+  box-shadow: var(--kg-shadow-sm);
+}
+
+/* —— Console & hero entrance —— */
+
+@keyframes kg-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kg-hero-copy {
+  animation: kg-rise-in 0.55s var(--kg-ease-spring) both;
+}
+
+.kg-hero-visual .kg-console {
+  animation: kg-rise-in 0.65s var(--kg-ease-spring) 0.08s both;
+}
+
+.kg-console {
+  transition:
+    transform var(--kg-duration-normal) var(--kg-ease-spring),
+    box-shadow var(--kg-duration-normal) var(--kg-ease-spring);
+}
+
+.kg-hero-visual:hover .kg-console {
+  transform: translateY(-4px);
+  box-shadow: var(--kg-shadow-lg);
+}
+
+/* —— Form controls —— */
+
+.kg-input,
+.kg-select,
+.kg-textarea {
+  transition:
+    border-color var(--kg-duration-fast) ease,
+    box-shadow var(--kg-duration-fast) var(--kg-ease-spring),
+    background-color var(--kg-duration-fast) ease;
+}
+
+.kg-input:hover:not(:focus),
+.kg-select:hover:not(:focus),
+.kg-textarea:hover:not(:focus) {
+  border-color: color-mix(in srgb, var(--kg-fg) 18%, var(--kg-border));
+}
+
+.kg-input:focus,
+.kg-select:focus,
+.kg-textarea:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--kg-accent) 25%, transparent);
+}
+
+/* —— Tables —— */
+
+.kg-table tbody tr td {
+  transition: background-color var(--kg-duration-fast) ease;
+}
+
+.kg-table-wrap {
+  transition: box-shadow var(--kg-duration-normal) var(--kg-ease-spring);
+}
+
+.kg-table-wrap:focus-within {
+  box-shadow: var(--kg-shadow-sm);
+}
+
+/* —— Status pulse —— */
+
+@keyframes kg-pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.kg-status-dot {
+  animation: kg-pulse-soft 2.4s var(--kg-ease-spring) infinite;
+}
+
+/* —— Typography vibrancy on materials —— */
+
+.kg-nav-sticky .kg-label,
+.kg-admin-header .kg-label {
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+.kg-pill {
+  transition:
+    border-color var(--kg-duration-fast) ease,
+    background-color var(--kg-duration-fast) ease,
+    transform var(--kg-duration-instant) var(--kg-ease-spring);
+}
+
+.kg-pill:hover {
+  border-color: color-mix(in srgb, var(--kg-fg) 20%, var(--kg-border));
+  background: color-mix(in srgb, var(--kg-fg) 3%, transparent);
+}
+
+.kg-label {
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+  .kg-site-nav-bar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--kg-space-3) 0;
+  }
+
+  .kg-site-nav {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--kg-space-2);
+  }
+
+  .kg-site-nav-link {
+    min-height: 40px;
+  }
+}

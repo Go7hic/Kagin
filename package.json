@@ -1,0 +1,23 @@
+{
+  "name": "kagin",
+  "private": true,
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "eslint apps/worker/src apps/admin/src packages/sdk/src",
+    "test": "pnpm --filter @kagin/worker test",
+    "verify": "pnpm --filter @kagin/worker verify",
+    "dev:worker": "pnpm --filter @kagin/worker dev",
+    "dev:admin": "pnpm --filter @kagin/admin dev",
+    "deploy": "pnpm build && pnpm --filter @kagin/worker deploy"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "workerd"]
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.28.0",
+    "typescript-eslint": "^8.34.0"
+  }
+}

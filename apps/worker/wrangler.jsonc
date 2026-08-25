@@ -1,0 +1,46 @@
+{
+  "name": "kagin",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+  "vars": {
+    "HEARTBEAT_TIMEOUT_SECONDS": "120",
+    "TIME_SKEW_TOLERANCE_SECONDS": "60",
+    "FEATURE_SCHEMA_STRICT": "true"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kagin-db",
+      "database_id": "99f8fe9b-12ef-4aa4-8ce5-cff32304976b",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "cf74555cc0e64dbaa6dde00e84648a14"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "LicenseDO",
+        "class_name": "LicenseDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["LicenseDO"]
+    }
+  ],
+  "assets": {
+    "directory": "../admin/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

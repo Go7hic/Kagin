@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+!.dev.vars.example
+.env
+.env.*
+!.env.example
+.smoke-admin.jwt
+*.local
+*.tsbuildinfo
+.DS_Store
+worker-configuration.d.ts

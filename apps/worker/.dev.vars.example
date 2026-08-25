@@ -1,0 +1,17 @@
+# Copy to apps/worker/.dev.vars for local `wrangler dev`.
+# Production: Cloudflare Dashboard → Worker kagin → Settings → Variables and Secrets.
+# Do not commit real values.
+
+# --- Hosted SaaS (required for Stripe) ---
+# Public site origin used for Checkout / Portal return URLs. No trailing slash.
+PUBLIC_BASE_URL=https://kagin.example.com
+
+STRIPE_SECRET_KEY=sk_live_replace_me
+STRIPE_PRICE_ID=price_replace_me
+STRIPE_WEBHOOK_SECRET=whsec_replace_me
+
+# Shown on the pricing page contact button
+CONTACT_EMAIL=you@example.com
+
+# --- Self-hosted only. Do not set this if Stripe is configured. ---
+# ADMIN_JWT_PUBLIC_JWK={"kty":"OKP","crv":"Ed25519","x":"..."}
