@@ -1,6 +1,6 @@
 # 部署
 
-把 Kagin 跑到你自己的 Cloudflare 账号上。本地开发见 [README](../README.md)。
+把 Kagin 跑到你自己的 Cloudflare 账号上。本地开发见 [README_zh.md](../README_zh.md)。
 
 ## 创建 D1 和 KV
 

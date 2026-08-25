@@ -1,57 +1,65 @@
+<p align="center">
+  <img src="apps/admin/public/logo.png" alt="Kagin" width="96" height="96">
+</p>
+
 # Kagin
 
-在 Cloudflare 上运行的 App 许可证密钥平台：签发、校验、心跳、浮动席位、特性令牌。
+[English](README.md) · [中文](README_zh.md)
 
-托管 SaaS 用邮箱注册 workspace，并可用 Stripe 订阅。自托管同一套代码，用外部 Admin JWT，不接 Stripe。
+App license-key platform on Cloudflare: issue keys, verify, heartbeat, floating seats, feature tokens.
 
-技术栈：Hono API、TanStack 管理端、TypeScript SDK。运行时是 Workers、D1、KV、Durable Objects。
+Hosted SaaS uses email signup for a workspace and optional Stripe billing. Self-host the same code with an external admin JWT and no Stripe.
 
-源码按 [PolyForm Noncommercial 1.0.0](LICENSE) 授权。商业使用需要单独许可。
+Stack: Hono API, TanStack admin, TypeScript SDK. Runtime: Workers, D1, KV, Durable Objects.
 
-## 文档
+Source is licensed under [PolyForm Noncommercial 1.0.0](LICENSE). Commercial use needs a separate license.
 
-| 文档 | 内容 |
+## Docs
+
+| Doc | Contents |
 | --- | --- |
-| [文档索引](docs/README.md) | 全部分类 |
-| [产品概览](docs/product/overview.md) | 已验证行为 |
-| [许可证域](docs/product/licensing.md) | API 与策略 |
-| [部署](docs/DEPLOY.md) | 自托管到 Cloudflare |
-| [安全](docs/SECURITY.md) | 漏洞与密钥 |
-| [ADR](docs/decisions/README.md) | 架构决策 |
-| [SDK](packages/sdk/README.md) | 客户端 |
+| [Doc index](docs/README.md) | Map of all docs |
+| [Product overview](docs/product/overview.md) | Verified behavior |
+| [Licensing](docs/product/licensing.md) | API and policy |
+| [Deploy](docs/DEPLOY.md) | Self-host on Cloudflare |
+| [Security](docs/SECURITY.md) | Vulnerabilities and secrets |
+| [ADRs](docs/decisions/README.md) | Architecture decisions |
+| [SDK](packages/sdk/README.md) | Client |
 
-## 结构
+Most of the `docs/` tree is in Chinese.
+
+## Layout
 
 ```text
-apps/worker/    Hono API 与 LicenseDO
-apps/admin/     TanStack 管理端
-packages/sdk/   TypeScript 客户端
-examples/ts/    集成示例
+apps/worker/    Hono API and LicenseDO
+apps/admin/     TanStack admin
+packages/sdk/   TypeScript client
+examples/ts/    Integration sample
 ```
 
-## 本地开发
+## Local development
 
 ```bash
 pnpm install
 pnpm dev:worker    # http://127.0.0.1:8787
-pnpm dev:admin     # http://127.0.0.1:5173，API 代理到 worker
+pnpm dev:admin     # http://127.0.0.1:5173, API proxied to the worker
 ```
 
-本地 Admin 用邮箱注册或登录即可。自托管 JWT：
+Sign up or log in with email in the local admin. For a self-hosted JWT:
 
 ```bash
 cd apps/worker && pnpm exec tsx scripts/gen-admin-jwt.ts
 ```
 
-环境变量模板：仓库根的 `.dev.vars.example`。复制为 `.dev.vars`，不要提交真实值。
+Env template: `.dev.vars.example` at the repo root. Copy it to `.dev.vars`. Do not commit real values.
 
-## 验证
+## Verify
 
 ```bash
 pnpm typecheck
 pnpm test
 pnpm build
-pnpm verify      # wrangler dev、API 冒烟、SDK 示例
+pnpm verify      # wrangler dev, API smoke, SDK sample
 ```
 
-生产部署见 [docs/DEPLOY.md](docs/DEPLOY.md)。
+Production deploy: [docs/DEPLOY.md](docs/DEPLOY.md).

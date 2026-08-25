@@ -32,7 +32,7 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_classes": ["LicenseDO"]
+      "new_sqlite_classes": ["LicenseDO"]
     }
   ],
   "assets": {
