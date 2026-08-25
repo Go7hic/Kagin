@@ -2,9 +2,9 @@
 
 :root {
   color-scheme: light dark;
-  --kg-font: ui-sans-serif, system-ui, sans-serif;
-  --kg-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --kg-pixel: var(--kg-mono);
+  --kg-font: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --kg-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --kg-pixel: "Geist Pixel", var(--kg-mono);
   --kg-bg: #ffffff;
   --kg-bg-subtle: #fafafa;
   --kg-bg-elevated: #ffffff;
