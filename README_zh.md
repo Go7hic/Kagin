@@ -12,8 +12,6 @@
 
 技术栈：Hono API、TanStack 管理端、TypeScript SDK。运行时是 Workers、D1、KV、Durable Objects。
 
-源码按 [PolyForm Noncommercial 1.0.0](LICENSE) 授权。商业使用需要单独许可。
-
 ## 文档
 
 | 文档 | 内容 |
@@ -61,3 +59,7 @@ pnpm verify      # wrangler dev、API 冒烟、SDK 示例
 ```
 
 生产部署见 [docs/DEPLOY.md](docs/DEPLOY.md)。
+
+## License
+
+源码按 [PolyForm Noncommercial 1.0.0](LICENSE) 授权。商业使用需要单独许可。

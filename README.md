@@ -12,8 +12,6 @@ Hosted SaaS uses email signup for a workspace and optional Stripe billing. Self-
 
 Stack: Hono API, TanStack admin, TypeScript SDK. Runtime: Workers, D1, KV, Durable Objects.
 
-Source is licensed under [PolyForm Noncommercial 1.0.0](LICENSE). Commercial use needs a separate license.
-
 ## Docs
 
 | Doc | Contents |
@@ -63,3 +61,7 @@ pnpm verify      # wrangler dev, API smoke, SDK sample
 ```
 
 Production deploy: [docs/DEPLOY.md](docs/DEPLOY.md).
+
+## License
+
+Source is licensed under [PolyForm Noncommercial 1.0.0](LICENSE). Commercial use needs a separate license.

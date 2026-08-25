@@ -22,7 +22,7 @@ Status: accepted
 
 ### 密码
 
-- PBKDF2-SHA256，120k iterations，随机 salt，存于 `users.password_hash`
+- PBKDF2-SHA256，100k iterations（Workers Web Crypto 上限），随机 salt，存于 `users.password_hash`
 
 ### 公共 API
 

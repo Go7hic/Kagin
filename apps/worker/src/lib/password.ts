@@ -1,4 +1,4 @@
-const PBKDF2_ITERATIONS = 120000;
+const PBKDF2_ITERATIONS = 100000;
 
 function bytesToBase64(bytes: Uint8Array): string {
   return btoa(String.fromCharCode(...bytes));
@@ -12,7 +12,7 @@ function base64ToBytes(b64: string): Uint8Array {
 }
 
 export const DUMMY_PASSWORD_HASH =
-  "pbkdf2$120000$MpY40i+Yl70z/SKFzy4GPQ==$MLR5qhJ8b5H3846ixXFxQu9yboVJ0c3hNA+8p6e0Q3w=";
+  "pbkdf2$100000$UIUwPlHSsZpticVilmX9fg==$OzmwL0NsdQ7FEzZKYGtvJKj+Xg138dqLxPxmPeOGzFE=";
 
 export async function hashPassword(password: string): Promise<string> {
   if (password.length > 128) throw new Error("password_too_long");
@@ -37,6 +37,7 @@ export async function verifyPassword(password: string, stored: string): Promise<
   const parts = stored.split("$");
   if (parts.length !== 4 || parts[0] !== "pbkdf2") return false;
   const iterations = parseInt(parts[1], 10);
+  if (!Number.isFinite(iterations) || iterations < 1 || iterations > PBKDF2_ITERATIONS) return false;
   const salt = base64ToBytes(parts[2]);
   const expected = base64ToBytes(parts[3]);
   const key = await crypto.subtle.importKey(
