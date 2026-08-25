@@ -11,7 +11,7 @@
 - License key、API token
 - Product Ed25519 私钥
 
-本地用 `apps/worker/.dev.vars`（已 gitignore）。生产用 Wrangler secret 或 Dashboard 的 Variables and Secrets。步骤见 [部署](DEPLOY.md)。
+本地用仓库根的 `.dev.vars`（已 gitignore）。生产用 Wrangler secret 或 Dashboard 的 Variables and Secrets。步骤见 [部署](DEPLOY.md)。
 
 ## 运营
 

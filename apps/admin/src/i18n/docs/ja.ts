@@ -289,8 +289,8 @@ pnpm dev:admin`,
       "CONTACT_EMAIL — 任意（商用セルフホストの連絡先）",
     ],
     buildTitle: "本番ビルド",
-    buildCode: `pnpm build
-cd apps/worker && wrangler deploy
+    buildCode: `pnpm install
+pnpm deploy
 pnpm verify`,
   },
 };

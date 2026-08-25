@@ -289,8 +289,8 @@ pnpm dev:admin     # Vite 控制台 :5173`,
       "CONTACT_EMAIL — 可选，定价页商用自托管联系邮箱",
     ],
     buildTitle: "生产构建",
-    buildCode: `pnpm build
-cd apps/worker && wrangler deploy
+    buildCode: `pnpm install
+pnpm deploy
 pnpm verify`,
   },
 };

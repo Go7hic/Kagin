@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 PORT=18787
 BASE="http://127.0.0.1:${PORT}"
-WR="pnpm exec wrangler"
+WR="pnpm exec wrangler --config ../../wrangler.jsonc"
 PRODUCT="smoke-prod-${RANDOM}"
 EMAIL="smoke-${RANDOM}@kagin.test"
 

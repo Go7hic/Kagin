@@ -305,8 +305,8 @@ pnpm dev:admin     # Vite console on :5173`,
       "CONTACT_EMAIL — optional, pricing page contact for commercial self-host",
     ],
     buildTitle: "Production build",
-    buildCode: `pnpm build
-cd apps/worker && wrangler deploy
+    buildCode: `pnpm install
+pnpm deploy
 pnpm verify`,
   },
 };

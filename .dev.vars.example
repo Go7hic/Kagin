@@ -1,4 +1,4 @@
-# Copy to apps/worker/.dev.vars for local `wrangler dev`.
+# Copy to .dev.vars in the repo root for local `wrangler dev`.
 # Production: Cloudflare Dashboard → Worker kagin → Settings → Variables and Secrets.
 # Do not commit real values.
 

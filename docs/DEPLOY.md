@@ -4,38 +4,36 @@
 
 ## 创建 D1 和 KV
 
-在仓库的 `apps/worker` 目录：
+在仓库根目录：
 
 ```bash
-npx wrangler d1 create kagin-db
-npx wrangler kv namespace create kagin-kv
+pnpm exec wrangler d1 create kagin-db
+pnpm exec wrangler kv namespace create kagin-kv
 ```
 
-把输出的 D1 `database_id` 和 KV `id` 写进 `apps/worker/wrangler.jsonc`。这两个值必须是你账号下的资源。Worker 的 `name` 必须与配置文件里的 `name` 一致，Workers Builds 才不会失败。
+把输出的 D1 `database_id` 和 KV `id` 写进仓库根的 `wrangler.jsonc`。这两个值必须是你账号下的资源。Dashboard 里的 Worker 名必须是 `kagin`，和 `wrangler.jsonc` 的 `name` 一致。
 
 ## 执行迁移
 
-`wrangler deploy` 不会跑 D1 migration。先执行：
+`wrangler deploy` 不会跑 D1 migration。在仓库根执行：
 
 ```bash
-cd apps/worker
-npx wrangler d1 migrations apply kagin-db --local    # 本地开发库
-npx wrangler d1 migrations apply kagin-db --remote   # 生产库
+pnpm exec wrangler d1 migrations apply kagin-db --local    # 本地开发库
+pnpm exec wrangler d1 migrations apply kagin-db --remote   # 生产库
 ```
 
 ## 环境变量
 
-本地：复制 `apps/worker/.dev.vars.example` 为 `apps/worker/.dev.vars`。不要提交真实值。
+本地：复制 `.dev.vars.example` 为 `.dev.vars`（和 `wrangler.jsonc` 放在仓库根）。不要提交真实值。
 
 生产：Cloudflare Dashboard → 你的 Worker → Settings → **Variables and Secrets**。也可以用 Wrangler：
 
 ```bash
-cd apps/worker
-npx wrangler secret put PUBLIC_BASE_URL
-npx wrangler secret put STRIPE_SECRET_KEY
-npx wrangler secret put STRIPE_PRICE_ID
-npx wrangler secret put STRIPE_WEBHOOK_SECRET
-npx wrangler secret put CONTACT_EMAIL
+pnpm exec wrangler secret put PUBLIC_BASE_URL
+pnpm exec wrangler secret put STRIPE_SECRET_KEY
+pnpm exec wrangler secret put STRIPE_PRICE_ID
+pnpm exec wrangler secret put STRIPE_WEBHOOK_SECRET
+pnpm exec wrangler secret put CONTACT_EMAIL
 ```
 
 托管 SaaS（Stripe 计费）需要：
@@ -60,15 +58,17 @@ npx wrangler secret put CONTACT_EMAIL
 
 ## GitHub 自动部署（Workers Builds）
 
-这是 pnpm monorepo。`wrangler.jsonc` 在 `apps/worker`，Admin 产物在 `apps/admin/dist`。连接仓库后使用：
+`wrangler.jsonc`、`pnpm-workspace.yaml` 都在仓库根。Root directory 留空。不要填 `apps/worker`。
+
+连接仓库后使用：
 
 | 设置 | 值 |
 | --- | --- |
-| Root directory | `apps/worker` |
-| Build command | `cd ../.. && pnpm install && pnpm --filter @kagin/admin build` |
+| Root directory | 留空 |
+| Build command | `pnpm install && pnpm --filter @kagin/admin build` |
 | Deploy command | `npx wrangler d1 migrations apply kagin-db --remote && npx wrangler deploy` |
 
-Deploy command 先迁移远程 D1，再发布 Worker。
+Deploy command 先给远程 D1 跑 migration，再发布 Worker。Admin 产物在 `apps/admin/dist`。
 
 ## 从本机发布
 
@@ -76,8 +76,6 @@ Deploy command 先迁移远程 D1，再发布 Worker。
 pnpm install
 pnpm deploy
 ```
-
-Admin `dist` 通过 `wrangler.jsonc` 的 `assets` 绑定随 Worker 一起发布。
 
 构建 Admin 时用环境变量控制登录 UI：
 

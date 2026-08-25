@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --local --persist-to .wrangler/state",
-    "deploy": "wrangler d1 migrations apply kagin-db --remote && wrangler deploy",
+    "dev": "wrangler dev --local --persist-to .wrangler/state -c ../../wrangler.jsonc",
+    "deploy": "wrangler d1 migrations apply kagin-db --remote -c ../../wrangler.jsonc && wrangler deploy -c ../../wrangler.jsonc",
     "typecheck": "tsc --noEmit",
-    "types": "wrangler types",
+    "types": "wrangler types -c ../../wrangler.jsonc",
     "verify": "bash scripts/verify.sh",
     "test": "vitest run"
   },

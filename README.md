@@ -43,7 +43,7 @@ pnpm dev:admin     # http://127.0.0.1:5173，API 代理到 worker
 cd apps/worker && pnpm exec tsx scripts/gen-admin-jwt.ts
 ```
 
-环境变量模板：`apps/worker/.dev.vars.example`。复制为 `.dev.vars`，不要提交真实值。
+环境变量模板：仓库根的 `.dev.vars.example`。复制为 `.dev.vars`，不要提交真实值。
 
 ## 验证
 
