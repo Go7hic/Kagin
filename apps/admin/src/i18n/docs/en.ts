@@ -213,6 +213,7 @@ const { license_key } = await res.json();
       "Call POST /v1/activate with license_key, a stable machine_id, and identity when required.",
       "Store machine_id securely (for example Keychain on Mac) and reuse it later.",
       "Optionally call heartbeat on launch to pick up revokes and policy changes.",
+      "To move to a new device: call POST /v1/deactivate on the old machine, or list devices and deactivate remotely when identity is bound.",
     ],
     activateTitle: "Activate request",
     activateCode: `POST /v1/activate
@@ -231,6 +232,23 @@ const { license_key } = await res.json();
     ],
     machineIdTitle: "Device ID (machine_id)",
     machineIdBody: "Create one stable ID per device and store it securely. On Mac, a hardware UUID or a random UUID saved to Keychain both work. Reusing the same ID keeps reactivation on the same machine reliable.",
+    rebindTitle: "Unbind and move to a new device",
+    rebindBody: "When the device limit is full, the customer can free a slot without contacting support. Call GET /v1/activations to list bound devices (pass identity when the license is account-bound), POST /v1/deactivate with the machine_id to remove, then POST /v1/activate on the new device.",
+    rebindCode: `GET /v1/activations?license_key=...&identity=buyer@example.com
+
+POST /v1/deactivate
+{
+  "license_key": "your-license-key",
+  "machine_id": "old-device-id",
+  "identity": "buyer@example.com"
+}
+
+POST /v1/activate
+{
+  "license_key": "your-license-key",
+  "machine_id": "new-device-id",
+  "identity": "buyer@example.com"
+}`,
     noSecretTitle: "Security reminder",
     noSecretBody: "Never ship your Kagin API key or admin login token inside the app. Clients only need the customer’s license key and, when required, their account (email or phone).",
   },
@@ -258,6 +276,7 @@ console.log(hb.state, hb.server_time);`,
       "Reuse the same session_id on every heartbeat for that machine.",
       "Persist last_seen_server_time (StorageAdapter helps) to detect clock rollback.",
       "Floating seats return HTTP 429 when the concurrent limit is full.",
+      "Use listActivations and deactivate to let customers move licenses between devices.",
     ],
   },
   api: {
@@ -272,6 +291,8 @@ console.log(hb.state, hb.server_time);`,
       ["GET", "/v1/server-time", "Signed server time"],
       ["GET", "/v1/policy", "Merged policy (optional product_id)"],
       ["POST", "/v1/activate", "Activate / bind a device"],
+      ["GET", "/v1/activations", "List bound devices (identity when account-bound)"],
+      ["POST", "/v1/deactivate", "Unbind a device so it can be moved"],
       ["POST", "/v1/heartbeat", "Session check-in / renew"],
       ["POST", "/v1/feature-token", "Issue a signed feature token"],
       ["POST", "/v1/ephemeral-token", "Short-lived machine token"],

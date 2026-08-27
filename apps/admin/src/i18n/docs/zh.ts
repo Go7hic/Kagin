@@ -197,6 +197,7 @@ const { license_key } = await res.json();
       "调用 POST /v1/activate，传入 license_key、稳定的 machine_id，以及需要的 identity。",
       "将 machine_id 安全保存（例如 Mac 的 Keychain），之后复用。",
       "可选：启动时调用 heartbeat，以便感知吊销与策略变更。",
+      "换机时：在旧设备调用 POST /v1/deactivate；若已绑定账号，也可列出设备后远程解绑，再在新设备 activate。",
     ],
     activateTitle: "激活请求",
     activateCode: `POST /v1/activate
@@ -215,6 +216,23 @@ const { license_key } = await res.json();
     ],
     machineIdTitle: "设备 ID（machine_id）",
     machineIdBody: "每台设备生成一个稳定 ID 并安全存储。在 Mac 上可用硬件 UUID，或把随机 UUID 存进 Keychain。同一台机器复用同一 ID，换机再激活更可靠。",
+    rebindTitle: "解绑并迁移到新设备",
+    rebindBody: "设备数已满时，用户可在 App 内自助释放名额：GET /v1/activations 查看已绑定设备（绑了账号需传 identity），POST /v1/deactivate 解绑指定 machine_id，再在新设备 POST /v1/activate。",
+    rebindCode: `GET /v1/activations?license_key=...&identity=buyer@example.com
+
+POST /v1/deactivate
+{
+  "license_key": "your-license-key",
+  "machine_id": "old-device-id",
+  "identity": "buyer@example.com"
+}
+
+POST /v1/activate
+{
+  "license_key": "your-license-key",
+  "machine_id": "new-device-id",
+  "identity": "buyer@example.com"
+}`,
     noSecretTitle: "安全提醒",
     noSecretBody: "切勿在 App 内放置 Kagin API 密钥或控制台登录令牌。客户端只需用户的激活码，以及（若需要）其购买账号。",
   },
@@ -242,6 +260,7 @@ console.log(hb.state, hb.server_time);`,
       "同一台机器每次 heartbeat 复用同一个 session_id。",
       "持久化 last_seen_server_time（可用 StorageAdapter）以检测时钟回拨。",
       "浮动席位在并发满时返回 HTTP 429。",
+      "可用 listActivations 与 deactivate 让用户自助换机，无需联系客服。",
     ],
   },
   api: {
@@ -256,6 +275,8 @@ console.log(hb.state, hb.server_time);`,
       ["GET", "/v1/server-time", "签名服务器时间"],
       ["GET", "/v1/policy", "合并后的策略（可选 product_id）"],
       ["POST", "/v1/activate", "激活 / 绑定设备"],
+      ["GET", "/v1/activations", "列出已绑定设备（绑了账号需 identity）"],
+      ["POST", "/v1/deactivate", "解绑设备，便于换机"],
       ["POST", "/v1/heartbeat", "会话签到 / 续期"],
       ["POST", "/v1/feature-token", "签发功能令牌"],
       ["POST", "/v1/ephemeral-token", "短期机器令牌"],

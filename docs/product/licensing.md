@@ -11,6 +11,8 @@
 | GET | `/v1/server-time` | `server_time`。带 `product_id`（SaaS 下还要 `org_slug`）时附 Ed25519 签名 |
 | GET | `/v1/policy?product_id=&org_slug=` | 合并后的 policy。SaaS 下同名 product 需要 `org_slug` |
 | POST | `/v1/activate` | 设备绑定（`machine_limit > 0` 时必填）。许可证绑了账号时要传 `identity` |
+| GET | `/v1/activations?license_key=&identity=` | 列出已绑定设备（绑了账号时要传 `identity`） |
+| POST | `/v1/deactivate` | 解绑设备。绑了账号时要传 `identity`。解绑后可在新设备上 `/activate` |
 | POST | `/v1/heartbeat` | 会话续期。浮动或有席位时走 LicenseDO |
 | POST | `/v1/feature-token` | 只签发 `license.features` 内的权限。载荷含 `exp` |
 | POST | `/v1/ephemeral-token` | 短期机器绑定令牌 |

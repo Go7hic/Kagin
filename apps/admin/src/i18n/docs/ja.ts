@@ -197,6 +197,7 @@ const { license_key } = await res.json();
       "POST /v1/activate に license_key、安定した machine_id、必要なら identity。",
       "machine_id を安全に保存（例: Mac の Keychain）し、再利用。",
       "任意で起動時 heartbeat により失効やポリシー更新を確認。",
+      "端末変更時: 旧端末で POST /v1/deactivate。アカウント绑定時は一覧取得後にリモート解除し、新端末で activate。",
     ],
     activateTitle: "激活リクエスト",
     activateCode: `POST /v1/activate
@@ -215,6 +216,23 @@ const { license_key } = await res.json();
     ],
     machineIdTitle: "端末 ID（machine_id）",
     machineIdBody: "端末ごとに安定した ID を作り安全に保存。Mac ではハードウェア UUID、または Keychain に保存したランダム UUID。同じ端末では同じ ID を再利用。",
+    rebindTitle: "解除して新端末へ移行",
+    rebindBody: "端末上限に達した場合、GET /v1/activations で一覧（アカウント绑定時は identity 必須）、POST /v1/deactivate で解除、新端末で POST /v1/activate。",
+    rebindCode: `GET /v1/activations?license_key=...&identity=buyer@example.com
+
+POST /v1/deactivate
+{
+  "license_key": "your-license-key",
+  "machine_id": "old-device-id",
+  "identity": "buyer@example.com"
+}
+
+POST /v1/activate
+{
+  "license_key": "your-license-key",
+  "machine_id": "new-device-id",
+  "identity": "buyer@example.com"
+}`,
     noSecretTitle: "セキュリティ",
     noSecretBody: "Kagin API キーや管理ログイントークンをアプリに入れない。クライアントが持つのは顧客のライセンスキーと、必要な場合の購入アカウントだけ。",
   },
@@ -242,6 +260,7 @@ console.log(hb.state, hb.server_time);`,
       "同じ端末の heartbeat では同じ session_id を再利用。",
       "last_seen_server_time を保存して時刻巻き戻しを検知。",
       "フローティングが満席のときは HTTP 429。",
+      "listActivations / deactivate で顧客の端末移行を自助対応可能。",
     ],
   },
   api: {
@@ -256,6 +275,8 @@ console.log(hb.state, hb.server_time);`,
       ["GET", "/v1/server-time", "署名付きサーバー時刻"],
       ["GET", "/v1/policy", "マージ済みポリシー"],
       ["POST", "/v1/activate", "激活 / 端末绑定"],
+      ["GET", "/v1/activations", "绑定端末一覧（アカウント绑定時 identity）"],
+      ["POST", "/v1/deactivate", "端末解除（换机用）"],
       ["POST", "/v1/heartbeat", "セッション更新"],
       ["POST", "/v1/feature-token", "機能トークン発行"],
       ["POST", "/v1/ephemeral-token", "短期端末トークン"],

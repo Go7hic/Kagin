@@ -13,7 +13,7 @@ import { db } from "./db";
 import { generateEd25519KeyPair, signEd25519 } from "./lib/crypto";
 import { signServerTime } from "./lib/server-time";
 import { validateFeatures } from "./lib/utils";
-import { bindMachine, gateLicense, requireActivatedMachine, requireCustomerIdentity, requireRecentHeartbeat, usesFloatingSeats } from "./lib/license-check";
+import { bindMachine, gateLicense, requireActivatedMachine, requireCustomerIdentity, requireRecentHeartbeat, unbindMachine, usesFloatingSeats } from "./lib/license-check";
 import { normalizeCustomerIdentity } from "./lib/identity";
 import { billingSnapshot, HOSTED_PRICE_USD, HOSTED_PRODUCT_LIMIT, hostedBillingConfigured, assertCanCreateProduct } from "./lib/billing";
 import { handleStripeEvent, stripeClient } from "./lib/stripe";
@@ -43,9 +43,17 @@ const activateSchema = z.object({
   identity: z.string().optional(),
 });
 
+const deactivateSchema = z.object({
+  license_key: z.string(),
+  machine_id: z.string(),
+  identity: z.string().optional(),
+});
+
 const FEATURE_TOKEN_TTL_SECONDS = 3600;
 const AUTH_RATE_LIMIT = 10;
 const AUTH_RATE_WINDOW = 15 * 60;
+const LICENSE_RATE_LIMIT = 30;
+const LICENSE_RATE_WINDOW = 15 * 60;
 
 const ephemeralSchema = z.object({
   license_key: z.string(),
@@ -168,6 +176,51 @@ export function createApp() {
       ...(signature ? { signature } : {}),
       state: gate.license.state,
       policy,
+    });
+  });
+
+  v1.get("/activations", async (c) => {
+    const licenseKey = c.req.query("license_key") || "";
+    const identity = c.req.query("identity");
+    if (!licenseKey) return c.json({ error: "license_key_required" }, 400);
+    const ip = c.req.header("CF-Connecting-IP") || "local";
+    if (await rateLimited(c.env, `license:${ip}`, LICENSE_RATE_LIMIT, LICENSE_RATE_WINDOW)) {
+      return c.json({ error: "rate_limited" }, 429);
+    }
+    const gate = await gateLicense(c, licenseKey);
+    if (!gate.ok) return c.json({ error: gate.error }, gate.status);
+    const limit = gate.license.machine_limit || 0;
+    if (limit <= 0) {
+      return c.json({ devices: [], devices_used: 0, devices_limit: 0 });
+    }
+    const identityOk = await requireCustomerIdentity(gate.license, identity);
+    if (!identityOk.ok) return c.json({ error: identityOk.error }, identityOk.status);
+    const devices = await db.listActivationsByKey(c.env, licenseKey);
+    return c.json({
+      devices,
+      devices_used: devices.length,
+      devices_limit: limit,
+    });
+  });
+
+  v1.post("/deactivate", zValidator("json", deactivateSchema), async (c) => {
+    const body = c.req.valid("json");
+    const ip = c.req.header("CF-Connecting-IP") || "local";
+    if (await rateLimited(c.env, `license:${ip}`, LICENSE_RATE_LIMIT, LICENSE_RATE_WINDOW)) {
+      return c.json({ error: "rate_limited" }, 429);
+    }
+    const gate = await gateLicense(c, body.license_key);
+    if (!gate.ok) return c.json({ error: gate.error }, gate.status);
+    const identityOk = await requireCustomerIdentity(gate.license, body.identity);
+    if (!identityOk.ok) return c.json({ error: identityOk.error }, identityOk.status);
+    const result = await unbindMachine(c.env, gate.license, body.machine_id);
+    if (!result.ok) return c.json({ error: result.error }, result.status);
+    return c.json({
+      ok: true,
+      deactivated: result.deactivated,
+      machine_id: body.machine_id,
+      devices_used: result.devices_used,
+      devices_limit: result.devices_limit,
     });
   });
 

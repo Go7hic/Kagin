@@ -332,6 +332,13 @@ export function DocsSectionPage() {
           <h3 className="kg-heading">{s.machineIdTitle}</h3>
           <p className="kg-body">{s.machineIdBody}</p>
         </div>
+        {"rebindTitle" in s && (
+          <div className="kg-docs-block">
+            <h3 className="kg-heading">{s.rebindTitle}</h3>
+            <p className="kg-body">{s.rebindBody}</p>
+            <CodeBlock>{s.rebindCode}</CodeBlock>
+          </div>
+        )}
         <div className="kg-docs-callout">
           <h3 className="kg-heading">{s.noSecretTitle}</h3>
           <p className="kg-body">{s.noSecretBody}</p>

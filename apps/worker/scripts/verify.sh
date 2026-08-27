@@ -130,6 +130,12 @@ test "$code" = "403"
 curl -sf -X POST "$BASE/v1/heartbeat" -H 'content-type: application/json' \
   -d "{\"license_key\":\"${LICENSE3}\",\"session_id\":\"ok1\",\"machine_id\":\"dev1\"}" | grep -q server_time
 
+curl -sf -X POST "$BASE/v1/deactivate" -H 'content-type: application/json' \
+  -d "{\"license_key\":\"${LICENSE3}\",\"machine_id\":\"dev1\"}" | grep -q '"deactivated":true'
+curl -sf -X POST "$BASE/v1/activate" -H 'content-type: application/json' \
+  -d "{\"license_key\":\"${LICENSE3}\",\"machine_id\":\"dev3\"}" | grep -q '"activated":true'
+curl -sf "$BASE/v1/activations?license_key=${LICENSE3}" | grep -q '"devices_used":2'
+
 CREATE4=$(curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/licenses" -H 'content-type: application/json' \
   -d "{\"product_id\":\"${PRODUCT}\",\"type\":\"perpetual\",\"expires_at\":${EXPIRES},\"seat_limit\":0,\"machine_limit\":1,\"customer_identity\":\"buyer@cleer.test\"}")
 LICENSE4=$(echo "$CREATE4" | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(d.license_key)")

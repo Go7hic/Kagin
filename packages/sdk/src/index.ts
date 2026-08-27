@@ -41,6 +41,26 @@ export type ActivateResponse = SignedTime & {
   policy?: Record<string, unknown>;
 };
 
+export type ActivationDevice = {
+  machine_id: string;
+  activated_at: number;
+  last_seen_at: number;
+};
+
+export type ActivationsResponse = {
+  devices: ActivationDevice[];
+  devices_used: number;
+  devices_limit: number;
+};
+
+export type DeactivateResponse = {
+  ok: boolean;
+  deactivated: boolean;
+  machine_id: string;
+  devices_used: number;
+  devices_limit: number;
+};
+
 export class KaginClient {
   constructor(private base: string, private storage?: StorageAdapter) {}
 
@@ -58,6 +78,37 @@ export class KaginClient {
     if (this.storage) {
       await this.storage.set("last_seen_server_time", String(data.server_time));
       await this.storage.set(`activated_${license_key}`, machine_id);
+    }
+    return data;
+  }
+
+  async listActivations(license_key: string, identity?: string) {
+    const params = new URLSearchParams({ license_key });
+    if (identity) params.set("identity", identity);
+    const res = await fetch(`${this.base}/v1/activations?${params}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({})) as { error?: string };
+      throw new Error(err.error || "activations_failed");
+    }
+    return res.json() as Promise<ActivationsResponse>;
+  }
+
+  async deactivate(license_key: string, machine_id: string, identity?: string) {
+    const res = await fetch(`${this.base}/v1/deactivate`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ license_key, machine_id, identity }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({})) as { error?: string };
+      throw new Error(err.error || "deactivate_failed");
+    }
+    const data: DeactivateResponse = await res.json();
+    if (this.storage && data.deactivated) {
+      const stored = await this.storage.get(`activated_${license_key}`);
+      if (stored === machine_id) {
+        await this.storage.set(`activated_${license_key}`, "");
+      }
     }
     return data;
   }

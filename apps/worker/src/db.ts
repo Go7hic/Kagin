@@ -269,6 +269,17 @@ export const db = {
       "DELETE FROM license_activations WHERE license_key = ? AND machine_id = ?",
     ).bind(licenseKey, machineId).run();
   },
+  async listActivationsByKey(env: Env, licenseKey: string) {
+    const res = await env.DB.prepare(
+      "SELECT machine_id, activated_at, last_seen_at FROM license_activations WHERE license_key = ? ORDER BY activated_at ASC",
+    ).bind(licenseKey).all();
+    return res.results ?? [];
+  },
+  async deleteSessionsForMachine(env: Env, licenseKey: string, machineId: string) {
+    await env.DB.prepare(
+      "DELETE FROM sessions WHERE license_key = ? AND machine_id = ?",
+    ).bind(licenseKey, machineId).run();
+  },
   async getFingerprint(env: Env, licenseKey: string) {
     return env.DB.prepare("SELECT * FROM fingerprints WHERE license_key = ?").bind(licenseKey).first<{
       debug_hits: number; time_anomaly: number; avg_session_time: number;

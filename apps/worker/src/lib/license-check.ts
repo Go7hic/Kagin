@@ -113,6 +113,37 @@ export function usesDeviceBinding(license: LicenseRow) {
   return (license.machine_limit || 0) > 0;
 }
 
+export type DeactivationResult =
+  | {
+    ok: true;
+    deactivated: boolean;
+    devices_used: number;
+    devices_limit: number;
+  }
+  | { ok: false; error: string; status: 400 | 403 | 404 };
+
+export async function unbindMachine(
+  env: AppBindings["Bindings"],
+  license: LicenseRow,
+  machineId: string,
+): Promise<DeactivationResult> {
+  const limit = license.machine_limit || 0;
+  if (limit <= 0) {
+    return { ok: false, error: "device_binding_disabled", status: 400 };
+  }
+
+  const existing = await db.getActivation(env, license.license_key, machineId);
+  if (!existing) {
+    const used = await db.countActivations(env, license.license_key);
+    return { ok: true, deactivated: false, devices_used: used?.c ?? 0, devices_limit: limit };
+  }
+
+  await db.deleteActivation(env, license.license_key, machineId);
+  await db.deleteSessionsForMachine(env, license.license_key, machineId);
+  const used = await db.countActivations(env, license.license_key);
+  return { ok: true, deactivated: true, devices_used: used?.c ?? 0, devices_limit: limit };
+}
+
 export async function requireRecentHeartbeat(
   env: AppBindings["Bindings"],
   license: LicenseRow,
