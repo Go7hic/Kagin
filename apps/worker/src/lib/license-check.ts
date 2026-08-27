@@ -14,7 +14,9 @@ export async function gateLicense(c: Context<AppBindings>, licenseKey: string): 
   const license = await db.getLicense(c.env, licenseKey);
   if (!license) return { ok: false, error: "invalid_license", status: 404 };
   if (license.status !== "active") return { ok: false, error: "license_not_active", status: 403 };
-  if (license.expires_at < now) return { ok: false, error: "license_expired", status: 403 };
+  if (license.type !== "perpetual" && license.expires_at < now) {
+    return { ok: false, error: "license_expired", status: 403 };
+  }
   if (license.state === "restricted" || license.state === "revoked") {
     return { ok: false, error: "license_restricted", status: 403 };
   }

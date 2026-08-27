@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { createApp } from "../src/app";
 import { hashToken, randomSecret, verifyTokenHash } from "../src/lib/token";
+import { PERPETUAL_EXPIRES_AT, resolvedLicenseExpiry, sameLicenseFulfillment } from "../src/lib/license-issuance";
+import type { LicenseRow } from "../src/db";
 
 describe("hono app", () => {
   const app = createApp();
@@ -45,5 +47,49 @@ describe("feature entitlements", () => {
     expect(parseFeatureSchema("{}")).toBeNull();
     expect(parseFeatureSchema("{\"properties\":{}}")).toBeNull();
     expect(parseFeatureSchema("{\"properties\":{\"tier\":\"string\"}}")).not.toBeNull();
+  });
+});
+
+describe("license fulfillment", () => {
+  const requested: LicenseRow = {
+    license_key: "new-key",
+    org_id: "org-1",
+    product_id: "emulux",
+    type: "perpetual",
+    expires_at: PERPETUAL_EXPIRES_AT,
+    features: "{\"export\":true,\"tier\":\"full\"}",
+    seat_limit: 0,
+    machine_limit: 2,
+    allowed_countries: "[]",
+    blocked_countries: "[]",
+    allowed_ips: "[]",
+    anti_debug: "{}",
+    issued_at: 1_700_000_000,
+    status: "active",
+    state: "active",
+    grace_until: 0,
+    customer_identity: "buyer@example.com",
+    external_reference: "stripe:cs_test_123",
+  };
+
+  it("gives perpetual licenses a stable wire expiry without requiring expires_at", () => {
+    expect(resolvedLicenseExpiry("perpetual", undefined, 1_700_000_000)).toBe(PERPETUAL_EXPIRES_AT);
+    expect(resolvedLicenseExpiry("subscription", undefined, 1_700_000_000)).toBeNull();
+    expect(resolvedLicenseExpiry("subscription", 1_800_000_000, 1_700_000_000)).toBe(1_800_000_000);
+  });
+
+  it("accepts an exact retry even when JSON object key order differs", () => {
+    const existing = { ...requested, license_key: "existing-key", features: "{\"tier\":\"full\",\"export\":true}" };
+    expect(sameLicenseFulfillment(existing, requested)).toBe(true);
+  });
+
+  it("does not reissue a key after the existing license was later revoked", () => {
+    const existing = { ...requested, license_key: "existing-key", status: "revoked", state: "revoked" };
+    expect(sameLicenseFulfillment(existing, requested)).toBe(true);
+  });
+
+  it("rejects reuse of an external reference for another buyer", () => {
+    const existing = { ...requested, license_key: "existing-key", customer_identity: "other@example.com" };
+    expect(sameLicenseFulfillment(existing, requested)).toBe(false);
   });
 });

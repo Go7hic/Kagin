@@ -165,6 +165,7 @@ export const enDocs = {
       "Pass the buyer email or phone as customer_identity if you want activation to require that account.",
       "Show or email the returned license_key to the customer.",
       "The customer activates inside your app via the public activate API — no API key in the app.",
+      "Use the payment provider order ID as external_reference; retries return the original key instead of issuing another one.",
     ],
     keysTitle: "API keys",
     keysBody: "In the console open API keys → Create key. Copy the secret (starts with kagin_sk_live_) into your server environment, for example KAGIN_API_KEY. Send it as: Authorization: Bearer <your-api-key>.",
@@ -173,6 +174,7 @@ export const enDocs = {
       "Use API keys to issue and revoke licenses and to manage products and sessions from your backend.",
       "API keys cannot create or revoke other API keys — sign in to the console for that.",
       "If a key leaks, revoke it immediately and create a new one.",
+      "Perpetual licenses do not need expires_at; subscription and floating licenses still require a future expiry.",
     ],
     webhookTitle: "Example: create a key after payment",
     webhookCode: `// Node.js — after payment succeeds
@@ -185,10 +187,10 @@ const res = await fetch("https://api.example.com/admin/v1/licenses", {
   body: JSON.stringify({
     product_id: "my-app",
     type: "perpetual",
-    expires_at: Math.floor(Date.now() / 1000) + 86400 * 365 * 10,
     machine_limit: 1,
     seat_limit: 0,
     customer_identity: order.buyer_email,
+    external_reference: "stripe:" + order.checkout_session_id,
   }),
 });
 const { license_key } = await res.json();

@@ -18,6 +18,7 @@ export type LicenseRow = {
   state: string;
   grace_until: number;
   customer_identity: string;
+  external_reference: string | null;
 };
 
 export type ProductRow = {
@@ -168,6 +169,10 @@ export const db = {
   async getLicense(env: Env, licenseKey: string) {
     return env.DB.prepare("SELECT * FROM licenses WHERE license_key = ?").bind(licenseKey).first<LicenseRow>();
   },
+  async getLicenseByExternalReference(env: Env, orgId: string, externalReference: string) {
+    return env.DB.prepare("SELECT * FROM licenses WHERE org_id = ? AND external_reference = ?")
+      .bind(orgId, externalReference).first<LicenseRow>();
+  },
   async listLicenses(env: Env, orgId: string, productId?: string) {
     const q = productId
       ? env.DB.prepare("SELECT * FROM licenses WHERE org_id = ? AND product_id = ?").bind(orgId, productId)
@@ -178,12 +183,13 @@ export const db = {
   async createLicense(env: Env, row: LicenseRow) {
     await env.DB.prepare(
       `INSERT INTO licenses (license_key, org_id, product_id, type, expires_at, features, seat_limit, machine_limit,
-        allowed_countries, blocked_countries, allowed_ips, anti_debug, issued_at, status, state, grace_until, customer_identity)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        allowed_countries, blocked_countries, allowed_ips, anti_debug, issued_at, status, state, grace_until,
+        customer_identity, external_reference)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).bind(
       row.license_key, row.org_id, row.product_id, row.type, row.expires_at, row.features, row.seat_limit,
       row.machine_limit, row.allowed_countries, row.blocked_countries, row.allowed_ips, row.anti_debug,
-      row.issued_at, row.status, row.state, row.grace_until, row.customer_identity || "",
+      row.issued_at, row.status, row.state, row.grace_until, row.customer_identity || "", row.external_reference,
     ).run();
   },
   async revokeLicense(env: Env, orgId: string, licenseKey: string) {

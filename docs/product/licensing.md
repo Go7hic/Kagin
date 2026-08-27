@@ -55,6 +55,8 @@
 ### License 类型与席位
 
 - `perpetual` / `subscription` / `floating`
+- `perpetual` 无需提交 `expires_at`，服务端不会按到期时间拒绝；另外两种类型必须提交未来的 `expires_at`
+- 自动发码应提交稳定且租户内唯一的 `external_reference`（例如 `stripe:<checkout_session_id>`）；相同请求重试返回原 `license_key`，参数冲突返回 `external_reference_conflict`
 - `seat_limit > 0` 或 `type=floating` 时心跳经 LicenseDO 计数
 - `seat_limit=0` 且无浮动：跳过 DO，仍写 D1 session 与指纹
 - `machine_limit > 0`：heartbeat / feature-token / ephemeral-token 需已激活的 `machine_id`

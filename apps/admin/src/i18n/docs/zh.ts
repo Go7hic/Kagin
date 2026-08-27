@@ -149,6 +149,7 @@ export const zhDocs: DocsContent = {
       "若希望激活时校验账号，将买家邮箱或手机写入 customer_identity。",
       "把返回的 license_key 展示在订单页或发到邮箱。",
       "用户在 App 内调用公开激活接口完成激活——App 里不要放 API 密钥。",
+      "用支付平台订单号填写 external_reference；同一订单重试会返回原激活码，不会重复签发。",
     ],
     keysTitle: "API 密钥",
     keysBody: "控制台 → API 密钥 → 创建。将密钥（以 kagin_sk_live_ 开头）写入服务器环境变量，例如 KAGIN_API_KEY。请求头：Authorization: Bearer <你的密钥>。",
@@ -157,6 +158,7 @@ export const zhDocs: DocsContent = {
       "可用 API 密钥在后端签发/吊销授权，并管理产品与会话。",
       "API 密钥不能创建或吊销其他 API 密钥——请登录控制台操作。",
       "密钥泄露请立即吊销并重新创建。",
+      "永久买断无需 expires_at；订阅与浮动授权仍需提供未来的到期时间。",
     ],
     webhookTitle: "示例：支付成功后发码",
     webhookCode: `// Node.js — 支付成功后
@@ -169,10 +171,10 @@ const res = await fetch("https://api.example.com/admin/v1/licenses", {
   body: JSON.stringify({
     product_id: "my-app",
     type: "perpetual",
-    expires_at: Math.floor(Date.now() / 1000) + 86400 * 365 * 10,
     machine_limit: 1,
     seat_limit: 0,
     customer_identity: order.buyer_email,
+    external_reference: "stripe:" + order.checkout_session_id,
   }),
 });
 const { license_key } = await res.json();

@@ -6,25 +6,34 @@ BASE="http://127.0.0.1:${PORT}"
 WR="pnpm exec wrangler --config ../../wrangler.jsonc"
 PRODUCT="smoke-prod-${RANDOM}"
 EMAIL="smoke-${RANDOM}@kagin.test"
-
-rm -f /tmp/kagin-wrangler.log
+STATE_DIR=$(/usr/bin/mktemp -d /tmp/kagin-verify.XXXXXX)
+LOG_FILE="${STATE_DIR}/wrangler.log"
 
 export CI=true
-$WR d1 migrations apply kagin-db --local 2>/dev/null || $WR d1 migrations apply DB --local
+$WR d1 migrations apply kagin-db --local --persist-to "$STATE_DIR" 2>/dev/null \
+  || $WR d1 migrations apply DB --local --persist-to "$STATE_DIR"
 
-$WR dev -l --persist-to .wrangler/state --port "$PORT" >/tmp/kagin-wrangler.log 2>&1 &
+$WR dev -l --persist-to "$STATE_DIR" --env-file scripts/verify.dev.vars --port "$PORT" >"$LOG_FILE" 2>&1 &
 PID=$!
-cleanup() { kill "$PID" 2>/dev/null || true; }
+cleanup() {
+  status=$?
+  kill "$PID" 2>/dev/null || true
+  if [ "$status" -ne 0 ]; then
+    echo "verify failed; recent Worker log:" >&2
+    tail -80 "$LOG_FILE" >&2 || true
+  fi
+  /bin/rm -rf "$STATE_DIR"
+}
 trap cleanup EXIT
 
 ready=0
 for i in $(seq 1 60); do
   if curl -sf "$BASE/health" >/dev/null; then ready=1; break; fi
-  sleep 1
+  /bin/sleep 1
 done
 if [ "$ready" -ne 1 ]; then
   echo "wrangler dev failed to start:" >&2
-  tail -30 /tmp/kagin-wrangler.log >&2
+  tail -30 "$LOG_FILE" >&2
   exit 1
 fi
 
@@ -46,7 +55,7 @@ curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/products" -H 'content-type: applicat
 curl -sf -H "$AUTH" "$BASE/admin/v1/products" | grep -q "$PRODUCT"
 curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/products/${PRODUCT}/keypair" | grep -q ok
 
-NOW=$(date +%s)
+NOW=$(/bin/date +%s)
 EXPIRES=$((NOW + 86400 * 30))
 CREATE=$(curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/licenses" -H 'content-type: application/json' \
   -d "{\"product_id\":\"${PRODUCT}\",\"type\":\"floating\",\"expires_at\":${EXPIRES},\"seat_limit\":2,\"features\":{\"tier\":\"pro\"}}")
@@ -137,8 +146,17 @@ curl -sf -X POST "$BASE/v1/activate" -H 'content-type: application/json' \
 curl -sf "$BASE/v1/activations?license_key=${LICENSE3}" | grep -q '"devices_used":2'
 
 CREATE4=$(curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/licenses" -H 'content-type: application/json' \
-  -d "{\"product_id\":\"${PRODUCT}\",\"type\":\"perpetual\",\"expires_at\":${EXPIRES},\"seat_limit\":0,\"machine_limit\":1,\"customer_identity\":\"buyer@cleer.test\"}")
+  -d "{\"product_id\":\"${PRODUCT}\",\"type\":\"perpetual\",\"seat_limit\":0,\"machine_limit\":1,\"customer_identity\":\"buyer@cleer.test\",\"external_reference\":\"stripe:cs_smoke_1\"}")
 LICENSE4=$(echo "$CREATE4" | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(d.license_key)")
+
+RETRY4=$(curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/licenses" -H 'content-type: application/json' \
+  -d "{\"product_id\":\"${PRODUCT}\",\"type\":\"perpetual\",\"seat_limit\":0,\"machine_limit\":1,\"customer_identity\":\"buyer@cleer.test\",\"external_reference\":\"stripe:cs_smoke_1\"}")
+RETRY_LICENSE4=$(echo "$RETRY4" | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); if (d.created !== false) process.exit(1); process.stdout.write(d.license_key)")
+test "$LICENSE4" = "$RETRY_LICENSE4"
+
+code=$(curl -s -o /dev/null -w '%{http_code}' -H "$AUTH" -X POST "$BASE/admin/v1/licenses" -H 'content-type: application/json' \
+  -d "{\"product_id\":\"${PRODUCT}\",\"type\":\"perpetual\",\"machine_limit\":1,\"customer_identity\":\"other@cleer.test\",\"external_reference\":\"stripe:cs_smoke_1\"}")
+test "$code" = "409"
 
 code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$BASE/v1/activate" -H 'content-type: application/json' \
   -d "{\"license_key\":\"${LICENSE4}\",\"machine_id\":\"cleer-m1\"}")

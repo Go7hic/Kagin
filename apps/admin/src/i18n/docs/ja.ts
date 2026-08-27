@@ -149,6 +149,7 @@ export const jaDocs: DocsContent = {
       "激活時にアカウント照合したい場合は customer_identity にメールまたは電話を設定。",
       "返ってきた license_key を注文画面やメールで渡す。",
       "顧客はアプリの公開 activate API で激活（アプリに API キーは不要）。",
+      "決済注文 ID を external_reference に設定すると、再試行でも同じキーが返り重複発行されません。",
     ],
     keysTitle: "API キー",
     keysBody: "コンソール → API キー → 作成。kagin_sk_live_ で始まる秘密鍵をサーバー環境変数（例: KAGIN_API_KEY）へ。Authorization: Bearer <your-api-key>。",
@@ -157,6 +158,7 @@ export const jaDocs: DocsContent = {
       "バックエンドからライセンス発行・失効、製品・セッション管理に使用。",
       "API キーは他の API キーを作成/失効できない — コンソールにログインして操作。",
       "漏洩したら即座に失効して再作成。",
+      "永久ライセンスでは expires_at は不要です。サブスクリプションとフローティングでは将来の期限が必要です。",
     ],
     webhookTitle: "例: 決済後にキー発行",
     webhookCode: `// Node.js — 決済成功後
@@ -169,10 +171,10 @@ const res = await fetch("https://api.example.com/admin/v1/licenses", {
   body: JSON.stringify({
     product_id: "my-app",
     type: "perpetual",
-    expires_at: Math.floor(Date.now() / 1000) + 86400 * 365 * 10,
     machine_limit: 1,
     seat_limit: 0,
     customer_identity: order.buyer_email,
+    external_reference: "stripe:" + order.checkout_session_id,
   }),
 });
 const { license_key } = await res.json();

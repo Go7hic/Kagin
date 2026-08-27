@@ -22,6 +22,7 @@ import { corsAllowOrigin, publicBaseUrl } from "./lib/public-origin";
 import { rateLimited } from "./lib/rate-limit";
 import { SECURITY_HEADERS } from "./lib/security-headers";
 import { entitledFeatures, parseFeatureSchema } from "./lib/features";
+import { resolvedLicenseExpiry, sameLicenseFulfillment } from "./lib/license-issuance";
 
 const heartbeatSchema = z.object({
   license_key: z.string(),
@@ -556,9 +557,11 @@ export function createApp() {
     return c.json(await db.listLicenses(c.env, requireOrg(c), productId || undefined));
   });
   admin.post("/licenses", zValidator("json", z.object({
-    product_id: z.string(), type: z.string(), expires_at: z.number(),
-    features: z.record(z.unknown()).optional(), seat_limit: z.number().optional(),
-    machine_limit: z.number().optional(), allowed_countries: z.array(z.string()).optional(),
+    product_id: z.string(), type: z.enum(["perpetual", "subscription", "floating"]),
+    expires_at: z.number().int().nonnegative().optional(),
+    external_reference: z.string().trim().min(1).max(255).optional(),
+    features: z.record(z.unknown()).optional(), seat_limit: z.number().int().min(0).optional(),
+    machine_limit: z.number().int().min(0).optional(), allowed_countries: z.array(z.string()).optional(),
     allowed_ips: z.array(z.string()).optional(), anti_debug: z.record(z.unknown()).optional(),
     status: z.string().optional(), customer_identity: z.string().optional(),
   })), async (c) => {
@@ -572,17 +575,43 @@ export function createApp() {
       const valid = validateFeatures(schema, features, c.env.FEATURE_SCHEMA_STRICT !== "false");
       if (!valid.ok) return c.json({ error: "features_invalid", details: valid.errors }, 400);
     }
-    const license_key = crypto.randomUUID();
     const issued_at = Math.floor(Date.now() / 1000);
+    const expires_at = resolvedLicenseExpiry(body.type, body.expires_at, issued_at);
+    if (expires_at === null) return c.json({ error: "invalid_expires_at" }, 400);
+    const license_key = crypto.randomUUID();
     const customer_identity = normalizeCustomerIdentity(body.customer_identity || "");
-    await db.createLicense(c.env, {
-      license_key, org_id: orgId, product_id: body.product_id, type: body.type, expires_at: body.expires_at,
+    const requested = {
+      license_key, org_id: orgId, product_id: body.product_id, type: body.type, expires_at,
       features: JSON.stringify(features), seat_limit: body.seat_limit || 0, machine_limit: body.machine_limit || 0,
       allowed_countries: JSON.stringify(body.allowed_countries || []), blocked_countries: "[]",
       allowed_ips: JSON.stringify(body.allowed_ips || []), anti_debug: JSON.stringify(body.anti_debug || {}),
       issued_at, status: body.status || "active", state: "active", grace_until: 0, customer_identity,
-    });
-    return c.json({ license_key }, 201);
+      external_reference: body.external_reference || null,
+    };
+    if (requested.external_reference) {
+      const existing = await db.getLicenseByExternalReference(c.env, orgId, requested.external_reference);
+      if (existing) {
+        if (!sameLicenseFulfillment(existing, requested)) {
+          return c.json({ error: "external_reference_conflict" }, 409);
+        }
+        return c.json({ license_key: existing.license_key, created: false }, 200);
+      }
+    }
+    try {
+      await db.createLicense(c.env, requested);
+    } catch (error) {
+      if (requested.external_reference) {
+        const existing = await db.getLicenseByExternalReference(c.env, orgId, requested.external_reference);
+        if (existing) {
+          if (!sameLicenseFulfillment(existing, requested)) {
+            return c.json({ error: "external_reference_conflict" }, 409);
+          }
+          return c.json({ license_key: existing.license_key, created: false }, 200);
+        }
+      }
+      throw error;
+    }
+    return c.json({ license_key, created: true }, 201);
   });
   admin.get("/licenses/:key", async (c) => {
     const row = await db.getLicense(c.env, c.req.param("key"));
@@ -648,12 +677,16 @@ export function createApp() {
       if (!product) continue;
       const license_key = crypto.randomUUID();
       const issued_at = Math.floor(Date.now() / 1000);
+      const resolvedExpiry = resolvedLicenseExpiry(type, parseInt(expires_at), issued_at);
+      if (resolvedExpiry === null) continue;
       await db.createLicense(c.env, {
-        license_key, org_id: orgId, product_id, type, expires_at: parseInt(expires_at), features: "{}",
+        license_key, org_id: orgId, product_id, type,
+        expires_at: resolvedExpiry, features: "{}",
         seat_limit: parseInt(seat_limit || "0"), machine_limit: parseInt(machine_limit || "0"),
         allowed_countries: "[]", blocked_countries: "[]", allowed_ips: "[]", anti_debug: "{}",
         issued_at, status: "active", state: "active", grace_until: 0,
         customer_identity: normalizeCustomerIdentity(customer_identity || ""),
+        external_reference: null,
       });
       created.push(license_key);
     }
