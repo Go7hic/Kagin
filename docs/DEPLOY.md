@@ -48,12 +48,18 @@ pnpm exec wrangler secret put CONTACT_EMAIL
 
 ## Email（Cloudflare Email Service）
 
-`wrangler.jsonc` 绑定 `EMAIL`（Send Email），发件地址限制为 `hello@kagin.dev`。
+`wrangler.jsonc` 可绑定 `EMAIL`（Send Email）。托管站 `kagin.dev` 发件限制为 `hello@kagin.dev`；自托管请换成你自己的已 onboard 域名与发件地址。
 
-- Email Sending：为 `kagin.dev` 开启
-- Email Routing：`hello@kagin.dev` → 账户已验证的目标邮箱
+```bash
+pnpm exec wrangler email sending enable yourdomain.com
+pnpm exec wrangler email routing enable yourdomain.com
+pnpm exec wrangler email routing rules create yourdomain.com \
+  --name hello --match-type literal --match-field to \
+  --match-value hello@yourdomain.com --action-type forward \
+  --action-value you@example.com
+```
 
-Worker 内发送示例：`await env.EMAIL.send({ to, from: "hello@kagin.dev", subject, text, html })`。
+Worker 内发送示例：`await env.EMAIL.send({ to, from: "hello@yourdomain.com", subject, text, html })`。
 
 ## Stripe webhook
 

@@ -50,16 +50,17 @@
 | `seat_limit = 0` 且非 floating | heartbeat 可选 | 无并发席位 cap |
 | `seat_limit > 0` 或 `type=floating` | heartbeat 占席位 | 满席 → 429 |
 | 两者都设 | 先 activate，再按 policy heartbeat | 设备绑定 + 并发席位 |
-| `customer_identity` 已设 | activate 时传 `identity`（邮箱/手机号等） | 不匹配 → `identity_mismatch` |
+| `customer_identity` 已设 | activate / deactivate / listActivations 时传 `identity`（邮箱/手机号等） | 不匹配 → `identity_mismatch` |
 
 ### License 类型与席位
 
 - `perpetual` / `subscription` / `floating`
 - `perpetual` 无需提交 `expires_at`，服务端不会按到期时间拒绝；另外两种类型必须提交未来的 `expires_at`
-- 自动发码应提交稳定且租户内唯一的 `external_reference`（例如 `stripe:<checkout_session_id>`）；相同请求重试返回原 `license_key`，参数冲突返回 `external_reference_conflict`
+- 自动发码应提交稳定且租户内唯一的 `external_reference`（例如 `stripe:<checkout_session_id>`）；相同请求重试返回原 `license_key`（`created: false`），参数冲突返回 `external_reference_conflict`
 - `seat_limit > 0` 或 `type=floating` 时心跳经 LicenseDO 计数
 - `seat_limit=0` 且无浮动：跳过 DO，仍写 D1 session 与指纹
 - `machine_limit > 0`：heartbeat / feature-token / ephemeral-token 需已激活的 `machine_id`
+- 换机：客户端 `POST /v1/deactivate` 后 `POST /v1/activate`；或管理员 `DELETE/POST .../activations`
 
 ### 状态机
 
@@ -75,6 +76,7 @@
 - `0006_billing.sql`：组织上的 Stripe 字段
 - `0007_admin_sessions.sql`：`admin_sessions`
 - `0008_stripe_unique.sql`：Stripe customer 和 subscription 唯一索引
+- `0009_license_fulfillment.sql`：`licenses.external_reference` 与租户内唯一索引
 
 ## 失败与边界
 
@@ -83,10 +85,12 @@
 - 浮动许可证第 N+1 个并发 session 返回 429（`pnpm verify` 覆盖）
 - 设备绑定许可证第 N+1 台设备 `/activate` 返回 403（`machine_limit_exceeded`）
 - 未激活设备调用 heartbeat 返回 403（`machine_not_activated`）
+- 解绑后原设备 heartbeat 返回 403；管理员手动绑定后可恢复
+- 相同 `external_reference` 重试返回原 key；参数不一致返回 409
 
 ## 怎么验收
 
-- `pnpm verify`：Admin CRUD、heartbeat 席位、设备 activate、tokens、kick
+- `pnpm verify`：Admin CRUD、heartbeat 席位、设备 activate/deactivate、管理员绑定、tokens、kick、发码幂等
 - `examples/ts/check_license.ts`，环境变量 `KAGIN_LICENSE_KEY`
 
 ## 相关决策
