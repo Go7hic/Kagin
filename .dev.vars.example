@@ -11,7 +11,7 @@ STRIPE_PRICE_ID=price_replace_me
 STRIPE_WEBHOOK_SECRET=whsec_replace_me
 
 # Shown on the pricing page contact button
-CONTACT_EMAIL=you@example.com
+CONTACT_EMAIL=hello@kagin.dev
 
 # --- Self-hosted only. Do not set this if Stripe is configured. ---
 # ADMIN_JWT_PUBLIC_JWK={"kty":"OKP","crv":"Ed25519","x":"..."}

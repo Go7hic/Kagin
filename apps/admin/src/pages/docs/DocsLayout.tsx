@@ -1,7 +1,6 @@
 import { Link, Outlet, useParams } from "@tanstack/react-router";
 import { getToken } from "../../api";
 import { BrandMark } from "../../components/BrandMark";
-import { LocaleSwitcher } from "../../components/LocaleSwitcher";
 import { SiteFooter } from "../../components/SiteFooter";
 import { docSections, getDocs, isDocSection, type DocSection } from "../../i18n/docs";
 import { useLocale, useLocalizedPath, useT } from "../../i18n";
@@ -25,7 +24,6 @@ export function DocsLayout() {
               {docs.title}
             </Link>
             <Link to={lp("/pricing")} className="kg-site-nav-link">{t("nav.pricing")}</Link>
-            <LocaleSwitcher />
             {!signedIn ? (
               <Link to={lp("/admin/login")} className="kg-btn kg-btn-ghost">{t("common.signIn")}</Link>
             ) : null}

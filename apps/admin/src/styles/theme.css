@@ -1109,7 +1109,7 @@ a:hover {
 
 .kg-footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: var(--kg-space-8);
   padding: var(--kg-space-12) 0 var(--kg-space-8);
 }

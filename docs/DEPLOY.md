@@ -42,9 +42,18 @@ pnpm exec wrangler secret put CONTACT_EMAIL
 - `STRIPE_SECRET_KEY`
 - `STRIPE_PRICE_ID`
 - `STRIPE_WEBHOOK_SECRET`
-- `CONTACT_EMAIL`：定价页联系按钮，可选
+- `CONTACT_EMAIL`：定价页联系按钮，可选。托管默认 `hello@kagin.dev`（也可写在 `wrangler.jsonc` vars）
 
 自托管 JWT 和托管 Stripe 互斥。配了 Stripe 密钥就不要再设 `ADMIN_JWT_PUBLIC_JWK`。
+
+## Email（Cloudflare Email Service）
+
+`wrangler.jsonc` 绑定 `EMAIL`（Send Email），发件地址限制为 `hello@kagin.dev`。
+
+- Email Sending：为 `kagin.dev` 开启
+- Email Routing：`hello@kagin.dev` → 账户已验证的目标邮箱
+
+Worker 内发送示例：`await env.EMAIL.send({ to, from: "hello@kagin.dev", subject, text, html })`。
 
 ## Stripe webhook
 

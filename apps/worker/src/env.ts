@@ -16,6 +16,7 @@ export interface Env {
   STRIPE_PRICE_ID?: string;
   CONTACT_EMAIL?: string;
   PUBLIC_BASE_URL?: string;
+  EMAIL?: SendEmail;
 }
 
 export type AppBindings = {

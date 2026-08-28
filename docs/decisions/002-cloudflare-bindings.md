@@ -14,6 +14,7 @@ Status: accepted
 | **KV** (`KV`) | policy 快照缓存、可选 JWK 集、特性 schema 热读 |
 | **Durable Object** (`LicenseDO`) | 浮动 license 席位与活跃 session |
 | **Workers Assets** | Admin SPA `apps/admin/dist` 由同一 Worker 或 `wrangler.jsonc` assets 配置托管 |
+| **Send Email** (`EMAIL`) | Cloudflare Email Service；发件限制 `hello@kagin.dev` |
 
 - 配置文件：**wrangler.jsonc**（JSONC），`compatibility_date` 取当月
 - 环境：`env.staging` / `env.production` 分离 D1 database_id 与 KV id
@@ -24,13 +25,13 @@ Status: accepted
 - `PUBLIC_BASE_URL`（托管 Checkout 和 Portal 回跳 origin）
 - `STRIPE_SECRET_KEY`、`STRIPE_PRICE_ID`、`STRIPE_WEBHOOK_SECRET`
 - `ADMIN_JWT_PUBLIC_JWK`（仅自托管。与 Stripe 互斥）
-- `CONTACT_EMAIL`（可选）
 
 ### Vars（非敏感）
 
 - `HEARTBEAT_TIMEOUT_SECONDS`（默认 120）
 - `TIME_SKEW_TOLERANCE_SECONDS`（默认 60）
 - `FEATURE_SCHEMA_STRICT`（未设置时视为 true）
+- `CONTACT_EMAIL`（可选；托管默认 `hello@kagin.dev`）
 
 ## Alternatives
 

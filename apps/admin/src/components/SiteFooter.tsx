@@ -3,6 +3,10 @@ import { BrandMark } from "./BrandMark";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { useLocalizedPath, useT } from "../i18n";
 
+const CONTACT_EMAIL = "hello@kagin.dev";
+const X_URL = "https://x.com/Go7hic";
+const GITHUB_URL = "https://github.com/Go7hic/Kagin";
+
 export function SiteFooter() {
   const t = useT();
   const lp = useLocalizedPath();
@@ -24,6 +28,20 @@ export function SiteFooter() {
             <Link to={lp("/pricing")}>{t("nav.pricing")}</Link>
             <br />
             <Link to={lp("/docs/quickstart")}>{t("nav.docs")}</Link>
+          </p>
+        </div>
+        <div>
+          <p className="kg-label">{t("nav.resources")}</p>
+          <p className="kg-body kg-footer-links">
+            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+            <br />
+            <a href={X_URL} target="_blank" rel="noreferrer">
+              {t("nav.xAccount")}
+            </a>
+            <br />
+            <a href={GITHUB_URL} target="_blank" rel="noreferrer">
+              {t("nav.githubAccount")}
+            </a>
           </p>
         </div>
         <div className="kg-footer-locale">

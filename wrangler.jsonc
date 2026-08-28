@@ -5,8 +5,15 @@
   "vars": {
     "HEARTBEAT_TIMEOUT_SECONDS": "120",
     "TIME_SKEW_TOLERANCE_SECONDS": "60",
-    "FEATURE_SCHEMA_STRICT": "true"
+    "FEATURE_SCHEMA_STRICT": "true",
+    "CONTACT_EMAIL": "hello@kagin.dev"
   },
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["hello@kagin.dev"]
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
