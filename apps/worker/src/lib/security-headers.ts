@@ -5,11 +5,11 @@ export const SECURITY_HEADERS: Record<string, string> = {
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self'",
+    "script-src 'self' https://t.flareboard.dev",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data:",
     "font-src 'self'",
-    "connect-src 'self'",
+    "connect-src 'self' https://t.flareboard.dev",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -1,0 +1,87 @@
+# Kagin — full knowledge
+
+Last updated: 2026-08-28
+Canonical site: https://kagin.dev
+Repository: https://github.com/Go7hic/Kagin
+License: PolyForm Noncommercial 1.0.0 (commercial use needs a separate license)
+
+## Summary
+
+Kagin is a source-available app license-key platform. One codebase supports hosted SaaS (email workspace signup + optional Stripe) and self-hosting on Cloudflare (external Admin JWT, no Stripe). It issues license keys, binds devices or floating seats, renews sessions via heartbeat, signs feature tokens with per-product Ed25519 keys, and exposes an admin console plus a TypeScript SDK.
+
+## Product facts
+
+- Hosted domain: https://kagin.dev
+- Hosted price: $5 USD / month per workspace
+- Hosted product limit: 5 products when Stripe billing is configured
+- Unpaid hosted workspaces cannot create products (`402 payment_required`)
+- Contact: hello@kagin.dev
+- Stack: Hono API Worker, TanStack admin UI, TypeScript SDK
+- Bindings: D1, KV, LicenseDO (Durable Object), Workers Assets, Send Email (`EMAIL`)
+
+## Core capabilities
+
+1. Products with optional feature schema and Ed25519 keypair
+2. License types: `perpetual`, `subscription`, `floating`
+3. Device binding via `machine_limit` and `POST /v1/activate` / `POST /v1/deactivate`
+4. Floating / concurrent seats via `seat_limit` and LicenseDO heartbeats
+5. Optional buyer `customer_identity` (email/phone) on activate/deactivate
+6. Idempotent issuance with `external_reference` (payment webhook safe)
+7. Feature tokens and ephemeral tokens for clients
+8. Policies (offline tolerance, geo/IP) merged at heartbeat
+9. Admin console: products, licenses, devices, sessions, kick, API keys, billing
+
+## Public API (high level)
+
+- `GET /health`
+- `GET /v1/meta` — billing flags, price, product limit, contact email
+- `GET /v1/server-time`
+- `GET /v1/policy`
+- `POST /v1/activate` — bind device
+- `GET /v1/activations` — list bindings
+- `POST /v1/deactivate` — unbind device (rebind on another machine)
+- `POST /v1/heartbeat` — renew session / take seat
+- `POST /v1/feature-token`
+- `POST /v1/ephemeral-token`
+- `POST /v1/stripe/webhook`
+
+Admin routes live under `/admin/v1/*` (session cookie/Bearer, API key, or self-host JWT).
+
+## Typical integration
+
+1. Sign up at the console and create a product
+2. Optionally generate an Ed25519 keypair for offline verification
+3. Issue a license key (or fulfill from Stripe/webhook with `external_reference`)
+4. App calls activate with `license_key` + stable `machine_id` (+ identity if bound)
+5. App heartbeats and requests feature tokens as needed
+6. To change devices: deactivate then activate, or admin unbind/bind in console
+
+## Pricing and licensing
+
+| Mode | Cost | Notes |
+| --- | --- | --- |
+| Hosted SaaS | $5 / month | Up to 5 products; unlimited keys/devices/seats within product limit |
+| Self-host (noncommercial) | Free under PolyForm Noncommercial | Same console/API/SDK on your Cloudflare account |
+| Self-host (commercial) | Contact hello@kagin.dev | Separate commercial license required |
+
+## Limitations (current)
+
+- Single workspace per signup; no team invites, multi-org switcher, Magic link, or SSO
+- Send Email binding exists; transactional product email flows are not built yet
+- Docs UI is localized (en / zh / ja); repo `docs/` tree is mostly Chinese
+
+## Authoritative human pages
+
+- https://kagin.dev/en
+- https://kagin.dev/en/pricing
+- https://kagin.dev/en/docs/quickstart
+- https://kagin.dev/en/docs/licensing
+- https://kagin.dev/en/docs/api
+- https://kagin.dev/en/docs/sdk
+- https://kagin.dev/en/docs/deploy
+- https://kagin.dev/product.md
+- https://github.com/Go7hic/Kagin
+
+## Compared with building in-house
+
+Kagin provides enforceable machine limits and seat counters in the API (reject over-limit), signed offline-verifiable feature tokens, and a ready console. Alternatives are custom backends or closed SaaS licensing vendors; Kagin’s differentiator is source-available Cloudflare-native deployment you can audit and self-host.

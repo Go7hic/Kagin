@@ -8,4 +8,6 @@
 | [安全](SECURITY.md) | 操作 | 漏洞报告与密钥 |
 | [ADR 索引](decisions/README.md) | 决策 | 为什么这样实现 |
 
+站点根还有面向检索助手的可读文件：`/llms.txt`、`/llms-full.txt`、`/product.md`、`/sitemap.xml`、`/robots.txt`（构建自 `apps/admin/public/`）。
+
 `changes/` 是阶段性变更记录，不是当前产品承诺。以 `product/` 为准。

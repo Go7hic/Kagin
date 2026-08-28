@@ -1,0 +1,30 @@
+# Kagin
+
+> Source-available app license-key platform on Cloudflare. Issue keys, bind devices or floating seats, verify with heartbeats and Ed25519 feature tokens. Hosted SaaS or self-host the same code.
+
+## Primary Links
+
+- [Homepage](https://kagin.dev/en): Product overview and console entry
+- [Pricing](https://kagin.dev/en/pricing): Hosted $5/month (5 products) or self-host
+- [Docs — Quick start](https://kagin.dev/en/docs/quickstart): Create a product and issue a key
+- [Docs — Licensing](https://kagin.dev/en/docs/licensing): Device bind, seats, states
+- [Docs — API](https://kagin.dev/en/docs/api): Public `/v1` and admin `/admin/v1`
+- [Docs — SDK](https://kagin.dev/en/docs/sdk): TypeScript client
+- [Docs — Deploy](https://kagin.dev/en/docs/deploy): Self-host on Cloudflare
+- [GitHub](https://github.com/Go7hic/Kagin): Source repository
+- [Full knowledge file](https://kagin.dev/llms-full.txt): Longer factual summary
+- [Product Markdown](https://kagin.dev/product.md): Cite-ready product page
+
+## What It Is
+
+Kagin manages the license-key lifecycle for desktop and mobile apps: products, issuance, device activation/deactivation, concurrent seats, signed feature tokens, policies, and an admin console. Runtime is Cloudflare Workers, D1, KV, and Durable Objects.
+
+## Who It Is For
+
+Indie and small teams who sell apps and need enforceable device or seat limits without building a licensing backend from scratch. Commercial hosted use is $5/month; noncommercial self-host uses PolyForm Noncommercial 1.0.0.
+
+## Official Contacts
+
+- Email: hello@kagin.dev
+- X: https://x.com/Go7hic
+- GitHub: https://github.com/Go7hic/Kagin

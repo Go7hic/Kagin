@@ -24,6 +24,8 @@ Stack: Hono API, TanStack admin, TypeScript SDK. Runtime: Workers, D1, KV, Durab
 | [ADRs](docs/decisions/README.md) | Architecture decisions |
 | [SDK](packages/sdk/README.md) | Client |
 
+Hosted discovery files (after deploy): [llms.txt](https://kagin.dev/llms.txt), [product.md](https://kagin.dev/product.md), [sitemap.xml](https://kagin.dev/sitemap.xml).
+
 Most of the `docs/` tree is in Chinese.
 
 ## Layout

@@ -1,15 +1,84 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <title>Kagin — 源码可审计的应用授权密钥方案</title>
+    <title>Kagin — Source-available app licensing</title>
+    <meta
+      name="description"
+      content="Kagin is a source-available app license-key platform on Cloudflare. Issue keys, bind devices or floating seats, verify with heartbeats and Ed25519 feature tokens. Hosted from $5/month or self-host."
+    />
+    <link rel="canonical" href="https://kagin.dev/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kagin" />
+    <meta property="og:title" content="Kagin — Source-available app licensing" />
+    <meta
+      property="og:description"
+      content="Issue license keys, bind devices or seats, and verify in-app. Hosted SaaS or self-host on Cloudflare."
+    />
+    <meta property="og:url" content="https://kagin.dev/" />
+    <meta property="og:image" content="https://kagin.dev/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Kagin — Source-available app licensing" />
+    <meta
+      name="twitter:description"
+      content="Issue license keys, bind devices or seats, and verify in-app. Hosted SaaS or self-host on Cloudflare."
+    />
+    <link rel="alternate" type="text/markdown" href="https://kagin.dev/product.md" title="Kagin product summary" />
+    <link rel="alternate" type="text/plain" href="https://kagin.dev/llms.txt" title="llms.txt" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://kagin.dev/#org",
+            "name": "Kagin",
+            "url": "https://kagin.dev/",
+            "email": "hello@kagin.dev",
+            "logo": "https://kagin.dev/logo.png",
+            "sameAs": [
+              "https://github.com/Go7hic/Kagin",
+              "https://x.com/Go7hic"
+            ]
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://kagin.dev/#app",
+            "name": "Kagin",
+            "url": "https://kagin.dev/",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web, Cloudflare Workers",
+            "description": "Source-available app license-key platform: device binding, floating seats, signed feature tokens, admin console, and TypeScript SDK.",
+            "offers": {
+              "@type": "Offer",
+              "price": "5.00",
+              "priceCurrency": "USD",
+              "description": "Hosted SaaS, up to 5 products per workspace"
+            },
+            "publisher": { "@id": "https://kagin.dev/#org" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Kagin",
+            "codeRepository": "https://github.com/Go7hic/Kagin",
+            "programmingLanguage": ["TypeScript"],
+            "license": "https://polyformproject.org/licenses/noncommercial/1.0.0/"
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script
+      defer
+      src="https://t.flareboard.dev/script.js"
+      data-website-id="565d8ce7-369b-4946-87ec-1c031dea226e"
+    ></script>
   </body>
 </html>

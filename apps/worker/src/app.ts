@@ -70,9 +70,16 @@ export function createApp() {
   }));
   app.use("*", async (c, next) => {
     await next();
+    if (!c.res) return;
+    const headers = new Headers(c.res.headers);
     for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
-      c.res.headers.set(key, value);
+      headers.set(key, value);
     }
+    c.res = new Response(c.res.body, {
+      status: c.res.status,
+      statusText: c.res.statusText,
+      headers,
+    });
   });
   app.onError(errorHandler);
 
@@ -733,9 +740,22 @@ export function createApp() {
   app.route("/admin/v1", admin);
 
   app.get("*", async (c) => {
-    const res = await c.env.ASSETS.fetch(c.req.raw);
-    if (res.status === 404) return c.json({ error: "not_found" }, 404);
-    return res;
+    try {
+      let res = await c.env.ASSETS.fetch(c.req.raw);
+      if (res.status === 404) {
+        const indexUrl = new URL("/index.html", c.req.url);
+        res = await c.env.ASSETS.fetch(new Request(indexUrl.toString(), c.req.raw));
+      }
+      if (res.status >= 400) return c.json({ error: "not_found" }, 404);
+      return new Response(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: res.headers,
+      });
+    } catch (err) {
+      console.error(err);
+      return c.json({ error: "internal_error" }, 500);
+    }
   });
 
   return app;
