@@ -13,7 +13,7 @@ import { db } from "./db";
 import { generateEd25519KeyPair, signEd25519 } from "./lib/crypto";
 import { signServerTime } from "./lib/server-time";
 import { validateFeatures } from "./lib/utils";
-import { bindMachine, gateLicense, requireActivatedMachine, requireCustomerIdentity, requireRecentHeartbeat, unbindMachine, usesFloatingSeats } from "./lib/license-check";
+import { bindMachine, gateLicense, requireActivatedMachine, requireCustomerIdentity, requireRecentHeartbeat, unbindMachine, usesDeviceBinding, usesFloatingSeats } from "./lib/license-check";
 import { normalizeCustomerIdentity } from "./lib/identity";
 import { billingSnapshot, HOSTED_PRICE_USD, HOSTED_PRODUCT_LIMIT, hostedBillingConfigured, assertCanCreateProduct } from "./lib/billing";
 import { handleStripeEvent, stripeClient } from "./lib/stripe";
@@ -641,14 +641,43 @@ export function createApp() {
     if (!row || row.org_id !== orgId) return c.json({ error: "not_found" }, 404);
     return c.json(await db.listActivations(c.env, orgId, key));
   });
+  admin.post("/licenses/:key/activations", zValidator("json", z.object({
+    machine_id: z.string().trim().min(1).max(256),
+  })), async (c) => {
+    const orgId = requireOrg(c);
+    const key = c.req.param("key");
+    const { machine_id } = c.req.valid("json");
+    const row = await db.getLicense(c.env, key);
+    if (!row || row.org_id !== orgId) return c.json({ error: "not_found" }, 404);
+    if (!usesDeviceBinding(row)) return c.json({ error: "device_binding_disabled" }, 400);
+    if (row.status !== "active") return c.json({ error: "license_not_active" }, 403);
+    const now = Math.floor(Date.now() / 1000);
+    const bound = await bindMachine(c.env, row, machine_id, now);
+    if (!bound.ok) return c.json({ error: bound.error }, bound.status);
+    return c.json({
+      ok: true,
+      activated: true,
+      already_bound: bound.already_bound,
+      machine_id,
+      devices_used: bound.devices_used,
+      devices_limit: bound.devices_limit,
+    }, bound.already_bound ? 200 : 201);
+  });
   admin.delete("/licenses/:key/activations/:machine_id", async (c) => {
     const orgId = requireOrg(c);
     const key = c.req.param("key");
     const machineId = c.req.param("machine_id");
     const row = await db.getLicense(c.env, key);
     if (!row || row.org_id !== orgId) return c.json({ error: "not_found" }, 404);
-    await db.deleteActivation(c.env, key, machineId);
-    return c.json({ ok: true });
+    const result = await unbindMachine(c.env, row, machineId);
+    if (!result.ok) return c.json({ error: result.error }, result.status);
+    return c.json({
+      ok: true,
+      deactivated: result.deactivated,
+      machine_id: machineId,
+      devices_used: result.devices_used,
+      devices_limit: result.devices_limit,
+    });
   });
   admin.post("/licenses/:key/kick", zValidator("json", z.object({ session_id: z.string() })), async (c) => {
     const { session_id } = c.req.valid("json");

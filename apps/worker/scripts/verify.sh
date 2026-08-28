@@ -169,6 +169,15 @@ test "$code" = "403"
 curl -sf -X POST "$BASE/v1/activate" -H 'content-type: application/json' \
   -d "{\"license_key\":\"${LICENSE4}\",\"machine_id\":\"cleer-m1\",\"identity\":\"buyer@cleer.test\"}" | grep -q '"activated":true'
 
+curl -sf -H "$AUTH" -X DELETE "$BASE/admin/v1/licenses/${LICENSE4}/activations/cleer-m1" | grep -q '"deactivated":true'
+code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$BASE/v1/heartbeat" -H 'content-type: application/json' \
+  -d "{\"license_key\":\"${LICENSE4}\",\"session_id\":\"cleer-s1\",\"machine_id\":\"cleer-m1\"}")
+test "$code" = "403"
+curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/licenses/${LICENSE4}/activations" -H 'content-type: application/json' \
+  -d '{"machine_id":"cleer-m2"}' | grep -q '"activated":true'
+curl -sf -X POST "$BASE/v1/heartbeat" -H 'content-type: application/json' \
+  -d "{\"license_key\":\"${LICENSE4}\",\"session_id\":\"cleer-s2\",\"machine_id\":\"cleer-m2\"}" | grep -q server_time
+
 KEYRES=$(curl -sf -H "$AUTH" -X POST "$BASE/admin/v1/api-keys" -H 'content-type: application/json' -d '{"name":"verify-webhook"}')
 API_KEY=$(echo "$KEYRES" | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(d.api_key)")
 API_AUTH="Authorization: Bearer ${API_KEY}"

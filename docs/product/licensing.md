@@ -34,7 +34,7 @@
 | `auth/logout` | POST。作废当前 session |
 | `auth/me` | GET |
 | `products` | GET、POST、DELETE；`POST :id/keypair`；`PUT :id/features` |
-| `licenses` | GET、POST；`GET :key`；`POST :key/revoke`；`GET :key/sessions`；`GET :key/activations`；`DELETE :key/activations/:machine_id`；`POST :key/kick`；`POST bulk`（CSV） |
+| `licenses` | GET、POST；`GET :key`；`POST :key/revoke`；`GET :key/sessions`；`GET :key/activations`；`POST :key/activations`（手动绑定）；`DELETE :key/activations/:machine_id`（解绑并清理会话）；`POST :key/kick`；`POST bulk`（CSV） |
 | `api_keys` | GET、POST；`POST :id/revoke`（仅 session。API key 不能管其他 key） |
 | `sessions` | GET（最近 500 条） |
 | `policies` | GET、POST |

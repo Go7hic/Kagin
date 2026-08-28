@@ -71,8 +71,26 @@ export const api = {
   revokeLicense: (key: string) => request(`/admin/v1/licenses/${key}/revoke`, { method: "POST" }),
   listActivations: (key: string) =>
     request<Record<string, unknown>[]>(`/admin/v1/licenses/${key}/activations`),
+  createActivation: (key: string, machine_id: string) =>
+    request<{
+      ok: boolean;
+      activated: boolean;
+      already_bound: boolean;
+      machine_id: string;
+      devices_used: number;
+      devices_limit: number;
+    }>(`/admin/v1/licenses/${key}/activations`, {
+      method: "POST",
+      body: JSON.stringify({ machine_id }),
+    }),
   deleteActivation: (key: string, machineId: string) =>
-    request(`/admin/v1/licenses/${key}/activations/${encodeURIComponent(machineId)}`, { method: "DELETE" }),
+    request<{
+      ok: boolean;
+      deactivated: boolean;
+      machine_id: string;
+      devices_used: number;
+      devices_limit: number;
+    }>(`/admin/v1/licenses/${key}/activations/${encodeURIComponent(machineId)}`, { method: "DELETE" }),
   bulkLicenses: (csv: string) =>
     request<{ created: string[] }>("/admin/v1/licenses/bulk", { method: "POST", body: csv, headers: { "content-type": "text/plain" } }),
   listSessions: () => request<Record<string, unknown>[]>("/admin/v1/sessions"),
