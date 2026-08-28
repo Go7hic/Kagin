@@ -965,6 +965,7 @@ a:hover {
   border: 1px solid var(--kg-border);
   border-radius: var(--kg-radius);
   padding: var(--kg-space-8);
+  margin-bottom: var(--kg-space-12);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
