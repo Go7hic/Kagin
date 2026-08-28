@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { api, getToken } from "../api";
+import { SiteFooter } from "../components/SiteFooter";
 import { SiteNav } from "../components/SiteNav";
-import { BrandMark } from "../components/BrandMark";
-import { LocaleSwitcher } from "../components/LocaleSwitcher";
 import { useLocale, useLocalizedPath, useMessages, useT } from "../i18n";
 
 export function PricingPage() {
@@ -99,29 +98,9 @@ export function PricingPage() {
               {t(`pricing.errors.${error}`) === `pricing.errors.${error}` ? error : t(`pricing.errors.${error}`)}
             </p>
           ) : null}
-
-          <footer className="kg-footer-grid kg-landing-footer">
-            <div>
-              <BrandMark />
-              <p className="kg-body kg-footer-lede">{t("meta.tagline")}</p>
-            </div>
-            <div>
-              <p className="kg-label">{t("nav.product")}</p>
-              <p className="kg-body kg-footer-links">
-                <Link to={lp("/")}>{t("nav.features")}</Link>
-                <br />
-                <Link to={lp("/pricing")}>{t("nav.pricing")}</Link>
-                <br />
-                <Link to={lp("/docs/quickstart")}>{t("nav.docs")}</Link>
-              </p>
-            </div>
-            <div className="kg-footer-locale">
-              <p className="kg-label">{t("locale.label")}</p>
-              <LocaleSwitcher variant="list" />
-            </div>
-          </footer>
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -410,6 +410,13 @@ a:hover {
   color: var(--kg-fg-muted);
 }
 
+.kg-site-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--kg-border);
+  font-size: 0.8125rem;
+  color: var(--kg-fg-muted);
+}
+
 /* Admin shell */
 .kg-admin {
   display: flex;
@@ -1102,7 +1109,7 @@ a:hover {
 
 .kg-footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: var(--kg-space-8);
   padding: var(--kg-space-12) 0 var(--kg-space-8);
 }

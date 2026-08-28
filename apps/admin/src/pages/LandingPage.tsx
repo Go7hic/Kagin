@@ -1,8 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useLocalizedPath, useMessages, useT } from "../i18n";
-import { BrandMark } from "../components/BrandMark";
 import { ConsolePreview } from "../components/ConsolePreview";
-import { LocaleSwitcher } from "../components/LocaleSwitcher";
+import { SiteFooter } from "../components/SiteFooter";
 import { SiteNav } from "../components/SiteNav";
 
 export function LandingPage() {
@@ -119,37 +118,10 @@ export function LandingPage() {
               </Link>
             </div>
           </section>
-
-          <footer className="kg-footer-grid kg-landing-footer">
-            <div>
-              <BrandMark />
-              <p className="kg-body kg-footer-lede">{t("meta.tagline")}</p>
-            </div>
-            <div>
-              <p className="kg-label">{t("nav.product")}</p>
-              <p className="kg-body kg-footer-links">
-                <a href="#features">{t("nav.features")}</a>
-                <br />
-                <a href="#api">{t("nav.api")}</a>
-                <br />
-                <Link to={lp("/pricing")}>{t("nav.pricing")}</Link>
-                <br />
-                <Link to={lp("/docs/quickstart")}>{t("nav.docs")}</Link>
-                <br />
-                <Link to={lp("/admin")}>{t("nav.console")}</Link>
-              </p>
-            </div>
-            <div>
-              <p className="kg-label">{t("nav.deploy")}</p>
-              <p className="kg-body kg-footer-lede">{t("landing.footerDeploy")}</p>
-            </div>
-            <div className="kg-footer-locale">
-              <p className="kg-label">{t("locale.label")}</p>
-              <LocaleSwitcher variant="list" />
-            </div>
-          </footer>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

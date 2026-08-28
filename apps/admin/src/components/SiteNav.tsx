@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import { getToken } from "../api";
 import { BrandMark } from "./BrandMark";
 import { useLocalizedPath, useT } from "../i18n";
 
 export function SiteNav() {
   const t = useT();
   const lp = useLocalizedPath();
+  const signedIn = Boolean(getToken());
 
   return (
     <header className="kg-nav-sticky">
@@ -15,7 +17,9 @@ export function SiteNav() {
           <Link to={lp("/")} hash="flow" className="kg-site-nav-link">{t("nav.howItWorks")}</Link>
           <Link to={lp("/pricing")} className="kg-site-nav-link">{t("nav.pricing")}</Link>
           <Link to={lp("/docs/quickstart")} className="kg-site-nav-link">{t("nav.docs")}</Link>
-          <Link to={lp("/admin/login")} className="kg-btn kg-btn-ghost">{t("common.signIn")}</Link>
+          {!signedIn ? (
+            <Link to={lp("/admin/login")} className="kg-btn kg-btn-ghost">{t("common.signIn")}</Link>
+          ) : null}
           <Link to={lp("/admin")} className="kg-btn kg-btn-primary">{t("common.openConsole")}</Link>
         </nav>
       </div>

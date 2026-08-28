@@ -32,7 +32,6 @@ export function AdminLayout() {
         <div className="kg-sidebar-brand">
           <BrandMark to={lp("/")} />
         </div>
-        <p className="kg-sidebar-section">{t("admin.manage")}</p>
         <nav className="kg-sidebar-nav">
           {nav.map((item) => (
             <Link

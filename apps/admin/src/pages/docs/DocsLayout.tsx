@@ -1,6 +1,8 @@
 import { Link, Outlet, useParams } from "@tanstack/react-router";
+import { getToken } from "../../api";
 import { BrandMark } from "../../components/BrandMark";
 import { LocaleSwitcher } from "../../components/LocaleSwitcher";
+import { SiteFooter } from "../../components/SiteFooter";
 import { docSections, getDocs, isDocSection, type DocSection } from "../../i18n/docs";
 import { useLocale, useLocalizedPath, useT } from "../../i18n";
 
@@ -11,6 +13,7 @@ export function DocsLayout() {
   const docs = getDocs(locale);
   const { section } = useParams({ strict: false });
   const active = isDocSection(section ?? "") ? section : "quickstart";
+  const signedIn = Boolean(getToken());
 
   return (
     <div className="kg-shell kg-docs">
@@ -23,7 +26,9 @@ export function DocsLayout() {
             </Link>
             <Link to={lp("/pricing")} className="kg-site-nav-link">{t("nav.pricing")}</Link>
             <LocaleSwitcher />
-            <Link to={lp("/admin/login")} className="kg-btn kg-btn-ghost">{t("common.signIn")}</Link>
+            {!signedIn ? (
+              <Link to={lp("/admin/login")} className="kg-btn kg-btn-ghost">{t("common.signIn")}</Link>
+            ) : null}
             <Link to={lp("/admin")} className="kg-btn kg-btn-primary">{t("common.openConsole")}</Link>
           </nav>
         </div>
@@ -50,6 +55,8 @@ export function DocsLayout() {
           <Outlet />
         </main>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

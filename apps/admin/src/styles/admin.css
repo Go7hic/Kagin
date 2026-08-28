@@ -281,7 +281,7 @@
 }
 
 .kg-admin .kg-page-header {
-  margin-bottom: var(--kg-space-8);
+  margin-bottom: 0;
   padding-bottom: var(--kg-space-6);
   border-bottom: 1px solid var(--kg-border);
 }

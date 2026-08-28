@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../api";
+import { Modal } from "../../components/Modal";
 import { EmptyState, PageHeader, Panel } from "../../components/Panel";
 import { Link } from "@tanstack/react-router";
 import { useLocalizedPath, useT } from "../../i18n";
@@ -22,6 +23,7 @@ export function ProductsPage() {
   const [name, setName] = useState("");
   const [schemaProductId, setSchemaProductId] = useState<string | null>(null);
   const [schemaJson, setSchemaJson] = useState(DEFAULT_SCHEMA);
+  const [schemaError, setSchemaError] = useState("");
 
   const create = useMutation({
     mutationFn: () => api.createProduct(productId, name),
@@ -43,12 +45,18 @@ export function ProductsPage() {
       const parsed = JSON.parse(schemaJson) as Record<string, unknown>;
       return api.updateFeatureSchema(schemaProductId, parsed);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["products"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+      setSchemaError("");
+      setSchemaProductId(null);
+    },
+    onError: (err: Error) => setSchemaError(err.message),
   });
 
   function openSchemaEditor(product: Record<string, unknown>) {
     const id = product.product_id as string;
     setSchemaProductId(id);
+    setSchemaError("");
     const raw = product.feature_schema as string | undefined;
     if (raw) {
       try {
@@ -59,6 +67,11 @@ export function ProductsPage() {
     } else {
       setSchemaJson(DEFAULT_SCHEMA);
     }
+  }
+
+  function closeSchemaEditor() {
+    setSchemaProductId(null);
+    setSchemaError("");
   }
 
   return (
@@ -183,43 +196,48 @@ export function ProductsPage() {
         )}
       </Panel>
 
-      {schemaProductId && (
-        <Panel
-          title={t("products.schemaTitle", { id: schemaProductId })}
-          description={t("products.schemaDesc")}
-        >
-          <div className="kg-field">
-            <label className="kg-label" htmlFor="schema-json">{t("products.schemaJson")}</label>
-            <textarea
-              id="schema-json"
-              className="kg-textarea"
-              rows={10}
-              value={schemaJson}
-              onChange={(e) => setSchemaJson(e.target.value)}
-            />
-          </div>
+      <Modal
+        open={Boolean(schemaProductId)}
+        title={t("products.schemaTitle", { id: schemaProductId || "" })}
+        description={t("products.schemaDesc")}
+        onClose={closeSchemaEditor}
+        wide
+        footer={
           <div className="kg-form-actions">
+            <button type="button" className="kg-btn kg-btn-ghost" onClick={closeSchemaEditor}>
+              {t("common.cancel")}
+            </button>
             <button
               type="button"
               className="kg-btn kg-btn-primary"
               disabled={schema.isPending}
-              onClick={() => schema.mutate()}
+              onClick={() => {
+                try {
+                  JSON.parse(schemaJson);
+                  setSchemaError("");
+                  schema.mutate();
+                } catch {
+                  setSchemaError("invalid_json");
+                }
+              }}
             >
               {t("products.saveSchema")}
             </button>
-            <button
-              type="button"
-              className="kg-btn kg-btn-ghost"
-              onClick={() => setSchemaProductId(null)}
-            >
-              {t("common.cancel")}
-            </button>
           </div>
-          {schema.isError && (
-            <p className="kg-field-error">{(schema.error as Error).message}</p>
-          )}
-        </Panel>
-      )}
+        }
+      >
+        <div className="kg-field">
+          <label className="kg-label" htmlFor="schema-json">{t("products.schemaJson")}</label>
+          <textarea
+            id="schema-json"
+            className="kg-textarea"
+            rows={12}
+            value={schemaJson}
+            onChange={(e) => setSchemaJson(e.target.value)}
+          />
+        </div>
+        {schemaError ? <p className="kg-form-error" role="alert">{schemaError}</p> : null}
+      </Modal>
     </div>
   );
 }
