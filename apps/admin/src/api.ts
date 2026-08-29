@@ -12,6 +12,20 @@ export function clearToken() {
   sessionStorage.removeItem(TOKEN_KEY);
 }
 
+function redirectToLogin() {
+  if (typeof window === "undefined") return;
+  clearToken();
+  if (window.location.pathname.includes("/admin/login")) return;
+  const match = window.location.pathname.match(/^\/(en|zh|ja)(?=\/|$)/);
+  const locale = match?.[1] ?? "en";
+  const suffix = window.location.pathname.replace(/^\/(en|zh|ja)/, "") || "/admin";
+  const next =
+    suffix.startsWith("/admin") && suffix !== "/admin/login"
+      ? `?next=${encodeURIComponent(suffix === "/" ? "/admin" : suffix)}`
+      : "";
+  window.location.assign(`/${locale}/admin/login${next}`);
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set("content-type", "application/json");
@@ -20,7 +34,13 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(path, { ...options, headers });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error((err as { error?: string }).error || "request_failed");
+    const code = (err as { error?: string }).error || "request_failed";
+    const isCredentialEndpoint =
+      path === "/admin/v1/auth/login" || path === "/admin/v1/auth/signup";
+    if (res.status === 401 && !isCredentialEndpoint) {
+      redirectToLogin();
+    }
+    throw new Error(code);
   }
   return res.json() as Promise<T>;
 }
