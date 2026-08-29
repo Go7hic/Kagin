@@ -24,3 +24,7 @@
 /product.md
   Content-Type: text/markdown; charset=utf-8
   Cache-Control: public, max-age=3600
+
+/og-image.png
+  Content-Type: image/png
+  Cache-Control: public, max-age=86400
