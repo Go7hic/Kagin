@@ -56,11 +56,21 @@ export function PricingPage() {
 
           <div className="kg-pricing-grid">
             <article className="kg-pricing-card kg-pricing-card--featured">
-              <p className="kg-label">{t("pricing.hostedLabel")}</p>
-              <h2 className="kg-display kg-pricing-price">
-                {t("pricing.hostedPrice")}
-                <span className="kg-pricing-period">{t("pricing.hostedPeriod")}</span>
-              </h2>
+              <div className="kg-pricing-card-top">
+                <p className="kg-label">{t("pricing.hostedLabel")}</p>
+                <p className="kg-pricing-badge">{t("pricing.promoBadge")}</p>
+              </div>
+              <div className="kg-pricing-amount">
+                <p className="kg-pricing-was">
+                  <span className="kg-pricing-was-price">{t("pricing.hostedWasPrice")}</span>
+                  <span className="kg-pricing-was-period">{t("pricing.hostedPeriod")}</span>
+                </p>
+                <h2 className="kg-display kg-pricing-price">
+                  {t("pricing.hostedPrice")}
+                  <span className="kg-pricing-period">{t("pricing.hostedPeriod")}</span>
+                </h2>
+                <p className="kg-pricing-save">{t("pricing.promoSave")}</p>
+              </div>
               <ul className="kg-pricing-points">
                 {messages.pricing.hostedPoints.map((line) => (
                   <li key={line}>{line}</li>
@@ -74,6 +84,7 @@ export function PricingPage() {
               >
                 {pending ? t("common.loading") : t("pricing.subscribe")}
               </button>
+              <p className="kg-pricing-footnote">{t("pricing.promoFootnote")}</p>
             </article>
 
             <article className="kg-pricing-card">

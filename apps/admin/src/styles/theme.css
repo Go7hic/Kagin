@@ -849,11 +849,58 @@ a:hover {
   border-color: var(--kg-fg);
 }
 
+.kg-pricing-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kg-space-3);
+}
+
+.kg-pricing-badge {
+  margin: 0;
+  font-family: var(--kg-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--kg-fg);
+  border: 1px solid var(--kg-fg);
+  border-radius: var(--kg-radius);
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+}
+
+.kg-pricing-amount {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kg-space-2);
+}
+
+.kg-pricing-was {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--kg-space-1);
+  color: var(--kg-fg-muted);
+}
+
+.kg-pricing-was-price {
+  font-family: var(--kg-mono);
+  font-size: 1.125rem;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+.kg-pricing-was-period {
+  font-size: 0.875rem;
+}
+
 .kg-pricing-price {
   font-size: clamp(2rem, 4vw, 3rem);
   display: flex;
   align-items: baseline;
   gap: var(--kg-space-2);
+  margin: 0;
 }
 
 .kg-pricing-period {
@@ -861,6 +908,20 @@ a:hover {
   font-weight: 500;
   letter-spacing: 0;
   color: var(--kg-fg-muted);
+}
+
+.kg-pricing-save {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--kg-fg);
+}
+
+.kg-pricing-footnote {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--kg-fg-muted);
+  line-height: 1.4;
 }
 
 .kg-pricing-points {
