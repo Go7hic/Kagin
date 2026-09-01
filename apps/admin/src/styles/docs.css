@@ -176,16 +176,33 @@
 @media (max-width: 900px) {
   .kg-docs-body {
     grid-template-columns: 1fr;
+    padding-top: var(--kg-space-6);
+    padding-bottom: var(--kg-space-10);
+    gap: var(--kg-space-6);
   }
 
   .kg-docs-sidebar {
     position: static;
   }
 
+  .kg-docs-sidebar-lede {
+    display: none;
+  }
+
   .kg-docs-nav {
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: var(--kg-space-1);
     border-left: none;
     padding-left: 0;
+    padding-bottom: var(--kg-space-2);
+    scrollbar-width: thin;
+  }
+
+  .kg-docs-nav-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 }

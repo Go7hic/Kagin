@@ -28,6 +28,8 @@ export const en = {
     global: "global",
     select: "Select…",
     dash: "—",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
   },
   locale: {
     label: "Language",

@@ -30,6 +30,8 @@ export const zh = {
     global: "全局",
     select: "请选择…",
     dash: "—",
+    openMenu: "打开菜单",
+    closeMenu: "关闭菜单",
   },
   locale: {
     label: "语言",

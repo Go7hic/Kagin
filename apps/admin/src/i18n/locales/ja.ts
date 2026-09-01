@@ -30,6 +30,8 @@ export const ja = {
     global: "グローバル",
     select: "選択…",
     dash: "—",
+    openMenu: "メニューを開く",
+    closeMenu: "メニューを閉じる",
   },
   locale: {
     label: "言語",

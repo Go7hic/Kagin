@@ -554,10 +554,29 @@ a:hover {
 
   .kg-hero-grid {
     grid-template-columns: 1fr;
+    gap: var(--kg-space-8);
+    padding: var(--kg-space-10) 0 var(--kg-space-8);
+  }
+
+  .kg-hero-copy {
+    max-width: none;
+  }
+
+  .kg-hero-actions,
+  .kg-cta-actions {
+    width: 100%;
+  }
+
+  .kg-hero-actions .kg-btn,
+  .kg-cta-actions .kg-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    text-align: center;
   }
 
   .kg-stats-bar {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--kg-space-2);
   }
 
   .kg-feature-list {
@@ -577,14 +596,112 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
+  .kg-login-brand {
+    display: none;
+  }
+
+  .kg-login-form-wrap {
+    padding: var(--kg-space-8) var(--kg-space-4);
+  }
+
+  .kg-pricing {
+    padding-top: var(--kg-space-10);
+    padding-bottom: var(--kg-space-8);
+  }
+
   .kg-pricing-grid {
     grid-template-columns: 1fr;
+    gap: var(--kg-space-4);
+    margin-top: var(--kg-space-6);
+  }
+
+  .kg-pricing-card {
+    padding: var(--kg-space-6);
+  }
+
+  .kg-pricing-card .kg-btn {
+    width: 100%;
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .kg-pricing-card-top {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .kg-cta-band {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--kg-space-6);
+    margin-bottom: var(--kg-space-8);
+  }
+
+  .kg-site-nav--desktop {
+    display: none;
+  }
+
+  .kg-site-nav-toggle {
+    display: inline-flex;
+  }
+
+  .kg-site-nav-panel {
+    display: none;
+  }
+
+  .kg-site-nav-panel[data-open="true"] {
+    display: block;
+  }
+
+  .kg-site-nav--mobile {
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: var(--kg-space-1);
+    padding: var(--kg-space-3) var(--kg-space-6) var(--kg-space-5);
+  }
+
+  .kg-site-nav--mobile .kg-site-nav-link,
+  .kg-site-nav--mobile .kg-btn {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 44px;
+  }
+
+  .kg-site-nav--mobile .kg-btn {
+    justify-content: center;
+  }
+
+  .kg-section {
+    padding: var(--kg-space-8) 0;
+  }
+
+  .kg-footer-grid {
+    padding: var(--kg-space-8) 0 var(--kg-space-6);
+    gap: var(--kg-space-6);
+  }
+
+  .kg-container {
+    padding-left: var(--kg-space-4);
+    padding-right: var(--kg-space-4);
   }
 }
 
 @media (max-width: 480px) {
   .kg-flow {
     grid-template-columns: 1fr;
+  }
+
+  .kg-stats-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kg-pricing-price {
+    font-size: 2.25rem;
+  }
+
+  .kg-display {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
   }
 }
 
@@ -625,6 +742,7 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   gap: var(--kg-space-4);
+  min-height: var(--kg-nav-height);
 }
 
 .kg-site-nav {
@@ -644,6 +762,82 @@ a:hover {
 .kg-site-nav-link:hover {
   color: var(--kg-fg);
   background: color-mix(in srgb, var(--kg-fg) 4%, transparent);
+}
+
+.kg-site-nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--kg-border);
+  border-radius: var(--kg-radius);
+  background: var(--kg-bg);
+  color: var(--kg-fg);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kg-site-nav-toggle-bars,
+.kg-site-nav-toggle-bars::before,
+.kg-site-nav-toggle-bars::after {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform var(--kg-duration-fast, 150ms) ease;
+}
+
+.kg-site-nav-toggle-bars {
+  position: relative;
+}
+
+.kg-site-nav-toggle-bars::before,
+.kg-site-nav-toggle-bars::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.kg-site-nav-toggle-bars::before {
+  top: -5px;
+}
+
+.kg-site-nav-toggle-bars::after {
+  top: 5px;
+}
+
+.kg-site-nav-toggle-bars[data-open="true"] {
+  background: transparent;
+}
+
+.kg-site-nav-toggle-bars[data-open="true"]::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.kg-site-nav-toggle-bars[data-open="true"]::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+.kg-site-nav-panel {
+  display: none;
+  border-top: 1px solid var(--kg-border);
+  background: var(--kg-bg);
+}
+
+.kg-site-nav-panel[data-open="true"] {
+  display: block;
+}
+
+@media (min-width: 769px) {
+  .kg-site-nav-toggle,
+  .kg-site-nav-panel {
+    display: none !important;
+  }
 }
 
 .kg-locale-switcher {
