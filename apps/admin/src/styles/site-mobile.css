@@ -1,0 +1,337 @@
+/* Public site responsive layout — loaded last so it wins over base styles.
+   Scoped away from the admin console (`.kg-admin`). */
+
+@media (max-width: 960px) {
+  .kg-shell:not(.kg-admin) .kg-hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--kg-space-8);
+    padding: var(--kg-space-12) 0 var(--kg-space-8);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-hero-copy {
+    max-width: none;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-hero-visual {
+    order: 2;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-stats-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--kg-space-3);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-feature-list {
+    grid-template-columns: 1fr;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-feature-item {
+    padding: var(--kg-space-5) 0;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-feature-item:nth-child(even) {
+    padding-left: 0;
+    padding-right: 0;
+    border-left: none;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-flow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--kg-space-6);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--kg-space-6);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-footer-grid > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .kg-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .kg-shell:not(.kg-admin) {
+    overflow-x: clip;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-container {
+    padding-left: max(var(--kg-space-4), env(safe-area-inset-left));
+    padding-right: max(var(--kg-space-4), env(safe-area-inset-right));
+  }
+
+  /* —— Nav —— */
+  .kg-shell:not(.kg-admin) .kg-site-nav--desktop {
+    display: none !important;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav-toggle {
+    display: inline-flex !important;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav-bar {
+    min-height: var(--kg-nav-height);
+    height: auto;
+    padding: var(--kg-space-2) 0;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav-panel {
+    display: none;
+    border-top: 1px solid var(--kg-border);
+    background: var(--kg-bg);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav-panel[data-open="true"] {
+    display: block;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav--mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: var(--kg-space-2) var(--kg-space-4) var(--kg-space-4);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav--mobile .kg-site-nav-link,
+  .kg-shell:not(.kg-admin) .kg-site-nav--mobile .kg-btn {
+    width: 100%;
+    min-height: 44px;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav--mobile .kg-btn-ghost {
+    justify-content: flex-start;
+    color: var(--kg-fg-muted);
+    border-color: transparent;
+    background: transparent;
+    font-weight: 500;
+    padding-left: 0.625rem;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-site-nav--mobile .kg-btn-primary {
+    margin-top: var(--kg-space-3);
+    justify-content: center;
+  }
+
+  /* —— Hero —— */
+  .kg-shell:not(.kg-admin) .kg-hero-grid {
+    padding: var(--kg-space-8) 0 var(--kg-space-6);
+    gap: var(--kg-space-6);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-hero-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--kg-space-3);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-hero-actions .kg-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-console-lg .kg-console-body {
+    padding: var(--kg-space-4);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-console-lg .kg-console-json {
+    font-size: 0.75rem;
+  }
+
+  /* —— Sections —— */
+  .kg-shell:not(.kg-admin) .kg-section {
+    padding: var(--kg-space-8) 0;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-title {
+    font-size: clamp(1.375rem, 5vw, 1.75rem);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-section-lede {
+    max-width: none;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-stats-bar {
+    padding: var(--kg-space-4) 0;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-stats-bar-item {
+    min-width: 0;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-pixel-stat {
+    font-size: 0.9375rem;
+    word-break: break-word;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-flow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-flow-step {
+    padding: var(--kg-space-4) 0;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-stack-row,
+  .kg-shell:not(.kg-admin) .kg-api-routes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kg-space-2);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-code-block {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-code-block pre {
+    font-size: 0.75rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* —— CTA —— */
+  .kg-shell:not(.kg-admin) .kg-cta-band {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--kg-space-6);
+    margin-bottom: var(--kg-space-8);
+    gap: var(--kg-space-4);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-cta-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--kg-space-3);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-cta-actions .kg-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* —— Pricing —— */
+  .kg-pricing {
+    padding-top: var(--kg-space-8);
+    padding-bottom: var(--kg-space-8);
+  }
+
+  .kg-pricing .kg-title {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  .kg-pricing .kg-section-lede {
+    max-width: none;
+  }
+
+  .kg-pricing-grid {
+    grid-template-columns: 1fr;
+    gap: var(--kg-space-4);
+    margin-top: var(--kg-space-6);
+  }
+
+  .kg-pricing-card {
+    padding: var(--kg-space-5);
+  }
+
+  .kg-pricing-card .kg-btn,
+  .kg-pricing-card a.kg-btn {
+    width: 100%;
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .kg-pricing-card-top {
+    flex-wrap: wrap;
+    gap: var(--kg-space-2);
+  }
+
+  /* —— Footer —— */
+  .kg-shell:not(.kg-admin) .kg-footer-grid {
+    grid-template-columns: 1fr;
+    padding-top: var(--kg-space-8);
+    padding-bottom: var(--kg-space-6);
+    gap: var(--kg-space-6);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-footer-grid > :first-child {
+    grid-column: auto;
+  }
+
+  /* —— Login (public auth, not console shell) —— */
+  .kg-login-split {
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+  }
+
+  .kg-login-brand {
+    display: none;
+  }
+
+  .kg-login-form-wrap {
+    padding: var(--kg-space-8) var(--kg-space-4);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .kg-login-card {
+    width: 100%;
+    max-width: 28rem;
+  }
+
+  .kg-login-card .kg-stack-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--kg-space-2);
+  }
+
+  .kg-login-card .kg-stack-row .kg-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .kg-shell:not(.kg-admin) .kg-display {
+    font-size: clamp(2rem, 10vw, 2.75rem);
+  }
+
+  .kg-shell:not(.kg-admin) .kg-hero-headline {
+    font-size: 1.125rem;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-stats-bar {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--kg-space-2) var(--kg-space-3);
+  }
+
+  .kg-pricing-price {
+    font-size: 2.25rem;
+  }
+
+  .kg-shell:not(.kg-admin) .kg-console-json {
+    font-size: 0.6875rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .kg-shell:not(.kg-admin) .kg-site-nav-toggle,
+  .kg-shell:not(.kg-admin) .kg-site-nav-panel {
+    display: none !important;
+  }
+}

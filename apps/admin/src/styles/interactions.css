@@ -335,13 +335,13 @@ body {
 
 @media (max-width: 768px) {
   .kg-site-nav-bar {
-    height: auto;
     min-height: var(--kg-nav-height);
+    height: auto;
     padding: var(--kg-space-2) 0;
   }
 
   .kg-site-nav-link {
-    min-height: 44px;
+    min-height: var(--kg-tap-min);
     display: inline-flex;
     align-items: center;
   }

@@ -23,7 +23,7 @@ export function PricingPage() {
   });
 
   const subscribed = Boolean(me.data?.billing?.configured && me.data.billing.paid);
-  const contactEmail = meta.data?.contact_email || "";
+  const contactEmail = meta.data?.contact_email || "hello@kagin.dev";
 
   async function subscribe() {
     setError("");

@@ -10,6 +10,7 @@ import "./styles/theme.css";
 import "./styles/interactions.css";
 import "./styles/admin.css";
 import "./styles/docs.css";
+import "./styles/site-mobile.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

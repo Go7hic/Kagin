@@ -536,175 +536,6 @@ a:hover {
   gap: var(--kg-space-6);
 }
 
-@media (max-width: 768px) {
-  .kg-admin {
-    flex-direction: column;
-  }
-
-  .kg-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--kg-border);
-  }
-
-  .kg-sidebar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .kg-hero-grid {
-    grid-template-columns: 1fr;
-    gap: var(--kg-space-8);
-    padding: var(--kg-space-10) 0 var(--kg-space-8);
-  }
-
-  .kg-hero-copy {
-    max-width: none;
-  }
-
-  .kg-hero-actions,
-  .kg-cta-actions {
-    width: 100%;
-  }
-
-  .kg-hero-actions .kg-btn,
-  .kg-cta-actions .kg-btn {
-    flex: 1 1 auto;
-    justify-content: center;
-    text-align: center;
-  }
-
-  .kg-stats-bar {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--kg-space-2);
-  }
-
-  .kg-feature-list {
-    grid-template-columns: 1fr;
-  }
-
-  .kg-feature-item:nth-child(even) {
-    padding-left: 0;
-    border-left: none;
-  }
-
-  .kg-flow {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .kg-login-split {
-    grid-template-columns: 1fr;
-  }
-
-  .kg-login-brand {
-    display: none;
-  }
-
-  .kg-login-form-wrap {
-    padding: var(--kg-space-8) var(--kg-space-4);
-  }
-
-  .kg-pricing {
-    padding-top: var(--kg-space-10);
-    padding-bottom: var(--kg-space-8);
-  }
-
-  .kg-pricing-grid {
-    grid-template-columns: 1fr;
-    gap: var(--kg-space-4);
-    margin-top: var(--kg-space-6);
-  }
-
-  .kg-pricing-card {
-    padding: var(--kg-space-6);
-  }
-
-  .kg-pricing-card .kg-btn {
-    width: 100%;
-    align-self: stretch;
-    justify-content: center;
-  }
-
-  .kg-pricing-card-top {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-
-  .kg-cta-band {
-    flex-direction: column;
-    align-items: stretch;
-    padding: var(--kg-space-6);
-    margin-bottom: var(--kg-space-8);
-  }
-
-  .kg-site-nav--desktop {
-    display: none;
-  }
-
-  .kg-site-nav-toggle {
-    display: inline-flex;
-  }
-
-  .kg-site-nav-panel {
-    display: none;
-  }
-
-  .kg-site-nav-panel[data-open="true"] {
-    display: block;
-  }
-
-  .kg-site-nav--mobile {
-    flex-direction: column;
-    align-items: stretch;
-    flex-wrap: nowrap;
-    gap: var(--kg-space-1);
-    padding: var(--kg-space-3) var(--kg-space-6) var(--kg-space-5);
-  }
-
-  .kg-site-nav--mobile .kg-site-nav-link,
-  .kg-site-nav--mobile .kg-btn {
-    width: 100%;
-    justify-content: flex-start;
-    min-height: 44px;
-  }
-
-  .kg-site-nav--mobile .kg-btn {
-    justify-content: center;
-  }
-
-  .kg-section {
-    padding: var(--kg-space-8) 0;
-  }
-
-  .kg-footer-grid {
-    padding: var(--kg-space-8) 0 var(--kg-space-6);
-    gap: var(--kg-space-6);
-  }
-
-  .kg-container {
-    padding-left: var(--kg-space-4);
-    padding-right: var(--kg-space-4);
-  }
-}
-
-@media (max-width: 480px) {
-  .kg-flow {
-    grid-template-columns: 1fr;
-  }
-
-  .kg-stats-bar {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .kg-pricing-price {
-    font-size: 2.25rem;
-  }
-
-  .kg-display {
-    font-size: clamp(1.75rem, 8vw, 2.5rem);
-  }
-}
-
 /* —— Enhanced surfaces —— */
 
 .kg-grid-bg {
@@ -787,11 +618,15 @@ a:hover {
   height: 1.5px;
   background: currentColor;
   border-radius: 1px;
-  transition: transform var(--kg-duration-fast, 150ms) ease;
+  transition:
+    transform var(--kg-duration-fast, 150ms) ease,
+    opacity var(--kg-duration-fast, 150ms) ease,
+    top var(--kg-duration-fast, 150ms) ease;
 }
 
 .kg-site-nav-toggle-bars {
   position: relative;
+  flex-shrink: 0;
 }
 
 .kg-site-nav-toggle-bars::before,
@@ -896,7 +731,7 @@ a:hover {
 .kg-hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: var(--kg-space-10);
+  gap: var(--kg-space-8);
   align-items: center;
   padding: var(--kg-space-16) 0 var(--kg-space-12);
 }
@@ -1367,7 +1202,8 @@ a:hover {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: var(--kg-space-8);
-  padding: var(--kg-space-12) 0 var(--kg-space-8);
+  padding-top: var(--kg-space-12);
+  padding-bottom: var(--kg-space-8);
 }
 
 .kg-panel {
@@ -1468,23 +1304,5 @@ a:hover {
     font-family: var(--kg-mono);
     font-variation-settings: normal;
     text-transform: none;
-  }
-}
-
-@media (max-width: 900px) {
-  .kg-stats-bar {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .kg-flow {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .kg-dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .kg-footer-grid {
-    grid-template-columns: 1fr;
   }
 }
